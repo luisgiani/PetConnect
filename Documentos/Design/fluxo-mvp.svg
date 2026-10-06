@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title description">
+  <title id="title">PetConnect — protótipo de fluxo do MVP</title>
+  <desc id="description">Fluxos Android e Web responsiva para adotantes e doadores/ONGs. Inclui busca pública, autenticação, contato por WhatsApp e gestão de anúncios com fotos. Não inclui chat nem interesses.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #30283a; }
+      .title { font-size: 34px; font-weight: 700; fill: #593a8a; }
+      .subtitle { font-size: 16px; fill: #62596a; }
+      .lane { font-size: 19px; font-weight: 700; fill: #593a8a; }
+      .card-title { font-size: 16px; font-weight: 700; fill: #593a8a; }
+      .body { font-size: 14px; fill: #493d57; }
+      .small { font-size: 12px; fill: #62596a; }
+      .tag { font-size: 12px; font-weight: 700; fill: #593a8a; }
+      .card { fill: #fff; stroke: #d9cce9; stroke-width: 2; }
+      .header { fill: #f0e8ff; }
+      .adopter { fill: #fbf8ff; stroke: #e4d9f1; stroke-width: 1; }
+      .donor { fill: #f5fcf8; stroke: #d7eee3; stroke-width: 1; }
+      .arrow { fill: none; stroke: #a284c8; stroke-width: 3; marker-end: url(#arrowhead); }
+      .field { fill: #fff; stroke: #e5dce9; stroke-width: 1.5; }
+      .button { fill: #593a8a; }
+      .button-text { font-size: 12px; font-weight: 700; fill: #fff; }
+      .photo { fill: #fff0dc; stroke: #efd9b8; stroke-width: 1; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#a284c8"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1040" fill="#fffaf4"/>
+  <text class="title" x="64" y="68">PetConnect — fluxo do MVP</text>
+  <text class="subtitle" x="64" y="98">Android e Web responsiva · navegação pública · contato autenticado · anúncios com fotos</text>
+  <rect x="1267" y="48" width="269" height="38" rx="19" fill="#f0e8ff"/>
+  <text class="tag" x="1401" y="72" text-anchor="middle">ESCOPO MVP ACORDADO</text>
+
+  <rect class="adopter" x="48" y="128" width="1504" height="350" rx="20"/>
+  <text class="lane" x="72" y="161">FLUXO DO ADOTANTE</text>
+  <text class="small" x="1518" y="160" text-anchor="end">A lista e os detalhes são públicos; o contato exige conta confirmada.</text>
+
+  <g transform="translate(72 190)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">1 · Início</text>
+    <text class="body" x="18" y="78">PetConnect</text>
+    <text class="small" x="18" y="101">Conectando adoções a novos lares.</text>
+    <rect class="button" x="18" y="124" width="214" height="38" rx="9"/>
+    <text class="button-text" x="125" y="148" text-anchor="middle">Buscar animais</text>
+    <text class="body" x="18" y="192">Entrar  ·  Criar conta</text>
+    <text class="small" x="18" y="221">Publicar leva à autenticação.</text>
+  </g>
+  <path class="arrow" d="M328 314h22"/>
+  <g transform="translate(362 190)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">2 · Lista e filtros</text>
+    <rect class="field" x="16" y="58" width="218" height="31" rx="7"/>
+    <text class="small" x="27" y="78">Espécie · Porte</text>
+    <rect class="field" x="16" y="96" width="218" height="31" rx="7"/>
+    <text class="small" x="27" y="116">Cidade · Estado</text>
+    <rect class="photo" x="16" y="140" width="55" height="55" rx="9"/>
+    <text class="body" x="82" y="158">Mel · Cachorro</text>
+    <text class="small" x="82" y="178">2 anos · Porte médio</text>
+    <text class="small" x="82" y="194">Campinas, SP</text>
+    <text class="small" x="16" y="224">Somente animais disponíveis.</text>
+  </g>
+  <path class="arrow" d="M618 314h22"/>
+  <g transform="translate(652 190)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">3 · Detalhes</text>
+    <rect class="photo" x="16" y="58" width="218" height="74" rx="10"/>
+    <text class="small" x="125" y="100" text-anchor="middle">Galeria · 1 a 5 fotos</text>
+    <text class="body" x="16" y="158">Mel · 2 anos · Médio</text>
+    <text class="small" x="16" y="180">Localização · saúde · descrição</text>
+    <rect class="button" x="16" y="196" width="218" height="36" rx="9"/>
+    <text class="button-text" x="125" y="219" text-anchor="middle">Entrar em contato</text>
+  </g>
+  <path class="arrow" d="M908 314h22"/>
+  <g transform="translate(942 190)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">4 · Entrar / criar conta</text>
+    <text class="small" x="16" y="68">Ação protegida por autenticação</text>
+    <rect class="field" x="16" y="82" width="218" height="32" rx="7"/>
+    <text class="small" x="27" y="103">E-mail</text>
+    <rect class="field" x="16" y="122" width="218" height="32" rx="7"/>
+    <text class="small" x="27" y="143">Senha</text>
+    <text class="small" x="16" y="178">Adotante · Doador/ONG</text>
+    <text class="small" x="16" y="198">Confirmar e-mail para continuar.</text>
+    <text class="small" x="16" y="224">Retomar o animal após entrar.</text>
+  </g>
+  <path class="arrow" d="M1198 314h22"/>
+  <g transform="translate(1232 190)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">5 · WhatsApp</text>
+    <text class="body" x="18" y="78">Contato com responsável</text>
+    <text class="small" x="18" y="104">Abrir conversa pelo WhatsApp.</text>
+    <text class="small" x="18" y="131">Telefone não aparece na</text>
+    <text class="small" x="18" y="149">navegação pública.</text>
+    <rect class="button" x="18" y="176" width="214" height="38" rx="9"/>
+    <text class="button-text" x="125" y="200" text-anchor="middle">Abrir WhatsApp</text>
+    <text class="small" x="18" y="233">Sem chat interno no MVP.</text>
+  </g>
+
+  <rect class="donor" x="48" y="500" width="1504" height="350" rx="20"/>
+  <text class="lane" x="72" y="533">FLUXO DO DOADOR / ONG</text>
+  <text class="small" x="1518" y="532" text-anchor="end">Somente o responsável pode administrar os próprios anúncios.</text>
+
+  <g transform="translate(72 562)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">1 · Criar conta</text>
+    <text class="small" x="16" y="68">Selecionar perfil:</text>
+    <rect class="field" x="16" y="82" width="218" height="42" rx="8"/>
+    <text class="body" x="125" y="108" text-anchor="middle">Doador / ONG</text>
+    <rect class="field" x="16" y="134" width="218" height="32" rx="7"/>
+    <text class="small" x="27" y="155">Nome · e-mail · senha</text>
+    <text class="small" x="16" y="192">Confirmar e-mail obrigatório.</text>
+    <text class="small" x="16" y="218">Depois, completar o perfil.</text>
+  </g>
+  <path class="arrow" d="M328 686h22"/>
+  <g transform="translate(362 562)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">2 · Perfil do responsável</text>
+    <text class="small" x="16" y="73">Nome da pessoa ou organização</text>
+    <rect class="field" x="16" y="84" width="218" height="32" rx="7"/>
+    <text class="small" x="27" y="105">Nome</text>
+    <text class="small" x="16" y="139">Telefone para contato</text>
+    <rect class="field" x="16" y="150" width="218" height="32" rx="7"/>
+    <text class="small" x="27" y="171">WhatsApp</text>
+    <text class="small" x="16" y="210">Dado privado; acesso controlado.</text>
+  </g>
+  <path class="arrow" d="M618 686h22"/>
+  <g transform="translate(652 562)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">3 · Meus anúncios</text>
+    <text class="body" x="18" y="77">Mel · Disponível</text>
+    <text class="small" x="18" y="99">Editar · Encerrar</text>
+    <rect class="button" x="18" y="124" width="214" height="38" rx="9"/>
+    <text class="button-text" x="125" y="148" text-anchor="middle">Cadastrar animal</text>
+    <text class="small" x="18" y="192">Apenas anúncios da própria conta.</text>
+    <text class="small" x="18" y="217">Outros usuários não podem editar.</text>
+  </g>
+  <path class="arrow" d="M908 686h22"/>
+  <g transform="translate(942 562)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">4 · Dados do animal</text>
+    <text class="small" x="16" y="68">Nome · espécie · idade · raça</text>
+    <text class="small" x="16" y="89">Porte · saúde · descrição</text>
+    <rect class="field" x="16" y="103" width="104" height="31" rx="7"/>
+    <text class="small" x="25" y="124">Cidade</text>
+    <rect class="field" x="130" y="103" width="104" height="31" rx="7"/>
+    <text class="small" x="139" y="124">Estado</text>
+    <rect class="photo" x="16" y="146" width="218" height="46" rx="8"/>
+    <text class="small" x="125" y="166" text-anchor="middle">1 a 5 fotos · até 5 MB cada</text>
+    <text class="small" x="125" y="183" text-anchor="middle">Mínimo de 1 foto para publicar</text>
+    <rect class="button" x="16" y="202" width="218" height="30" rx="8"/>
+    <text class="button-text" x="125" y="222" text-anchor="middle">Publicar anúncio</text>
+  </g>
+  <path class="arrow" d="M1198 686h22"/>
+  <g transform="translate(1232 562)">
+    <rect class="card" width="250" height="248" rx="14"/>
+    <path class="header" d="M14 0h222a14 14 0 0 1 14 14v30H0V14A14 14 0 0 1 14 0z"/>
+    <text class="card-title" x="16" y="28">5 · Anúncio publicado</text>
+    <rect class="photo" x="16" y="58" width="58" height="58" rx="9"/>
+    <text class="body" x="85" y="78">Mel · Disponível</text>
+    <text class="small" x="85" y="99">Campinas, SP</text>
+    <text class="small" x="16" y="145">Visível na busca pública.</text>
+    <text class="small" x="16" y="169">Editar ou marcar como adotado.</text>
+    <text class="small" x="16" y="201">Encerrados não aparecem na busca.</text>
+    <text class="small" x="16" y="225">Políticas RLS protegem os dados.</text>
+  </g>
+
+  <line x1="64" y1="888" x2="1536" y2="888" stroke="#e5dce9" stroke-width="1.5"/>
+  <text class="small" x="64" y="921">Fora do MVP: chat interno · favoritos/interesses · publicação em lojas · entrega/certificação para iOS.</text>
+  <text class="small" x="64" y="951">Critérios técnicos: confirmação de e-mail · RLS · até 5 fotos por anúncio · cada arquivo até 5 MB antes da compressão.</text>
+  <text class="small" x="64" y="992">PetConnect · documento de escopo MVP · protótipo funcional de referência</text>
+</svg>
