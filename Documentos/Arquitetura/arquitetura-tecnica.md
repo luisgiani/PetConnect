@@ -66,9 +66,9 @@ A aplicação segue o modelo de **Arquitetura em Camadas (Layered Architecture)*
 ```
 src/
 ├── app/                      # Apresentação: rotas (Expo Router)
-│   ├── (tabs)/               # Início, Animais, Perfil
-│   ├── animal/[id].tsx       # Detalhes do animal
-│   └── auth/                 # Login e cadastro de usuário
+│   ├── animals/              # Lista, detalhe e cadastro de animal
+│   ├── auth/                 # Login, cadastro, confirmação e callback
+│   └── account.tsx           # Conta e encerramento de sessão
 ├── components/               # Componentes reutilizáveis (AnimalCard, Input, etc.)
 ├── features/
 │   ├── animals/
@@ -76,15 +76,25 @@ src/
 │   │   ├── services/
 │   │   ├── repositories/
 │   │   └── types.ts
-│   ├── auth/
-│   ├── interests/
-│   └── profile/
-├── lib/                      # supabase.ts, configuração
-└── utils/
+│   └── auth/
+│       ├── repositories/     # AuthRepository e ProfileRepository
+│       ├── schemas/
+│       ├── types.ts
+│       └── AuthProvider.tsx  # Sessão persistente e perfil corrente
+└── lib/
+    └── supabase/             # Cliente e tipos do banco
 supabase/
 ├── migrations/               # SQL versionado junto ao código
 └── functions/                # Edge Functions (TypeScript)
 ```
+
+Pastas `interests/` e `profile/` como features independentes não fazem parte da estrutura atual do MVP; não criá-las até que uma evolução seja aprovada.
+
+### 2.2 Autenticação e criação do perfil
+
+O cliente Supabase é compartilhado para que consultas, sessão e renovação usem a mesma instância. No cadastro, a aplicação envia nome, tipo (`adotante` ou `doador_ong`) e telefone do doador/ONG como metadados do usuário. Uma migration cria o perfil associado ao `auth.users.id` por trigger.
+
+`profiles` permite leitura somente pelo próprio usuário. O tipo do perfil não pode ser alterado via Data API após a criação; nome e telefone podem ser atualizados pelo titular. As policies de `animals` exigem perfil `doador_ong` para inserir, editar ou remover anúncios. O projeto Supabase deve ter confirmação por e-mail habilitada e a URL `petconnect://auth/callback` (mais a URL de desenvolvimento do Expo quando aplicável) permitida em Authentication Redirect URLs.
 
 ---
 

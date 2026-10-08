@@ -3,7 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 import "react-native-url-polyfill/auto";
 import type { Database } from "@/lib/supabase/database.types";
 
+let supabaseClient: ReturnType<typeof createClient<Database>> | undefined;
+
 export function createSupabaseClient() {
+  if (supabaseClient) return supabaseClient;
+
   const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -11,7 +15,7 @@ export function createSupabaseClient() {
     throw new Error("Configure EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY no .env.");
   }
 
-  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     auth: {
       storage: AsyncStorage,
       autoRefreshToken: true,
@@ -19,4 +23,6 @@ export function createSupabaseClient() {
       detectSessionInUrl: false,
     },
   });
+
+  return supabaseClient;
 }

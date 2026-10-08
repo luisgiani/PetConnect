@@ -3,6 +3,27 @@ import type { AnimalHealth, AnimalSize, AnimalSpecies, AnimalStatus } from "@/fe
 export type Database = {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          name: string;
+          profile_type: "adotante" | "doador_ong";
+          phone: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          profile_type: "adotante" | "doador_ong";
+          phone?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          phone?: string | null;
+        };
+        Relationships: [];
+      };
       animals: {
         Row: {
           id: string;
