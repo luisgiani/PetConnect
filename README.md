@@ -33,6 +33,8 @@ A documentação foi organizada por assunto. Consulte o [índice de documentos](
 ```text
 src/
 ├── app/                          # View: telas e rotas do Expo Router
+│   ├── auth/                     # Cadastro, login, confirmação de e-mail
+│   └── account.tsx               # Conta e encerramento de sessão
 ├── components/                   # View: elementos reutilizáveis
 ├── features/animals/
 │   ├── hooks/                    # Controller: conecta telas a casos de uso e cache
@@ -40,6 +42,7 @@ src/
 │   ├── services/                 # Model/domínio: regras e casos de uso
 │   ├── schemas/                  # Validação compartilhada dos dados de entrada
 │   └── types.ts                  # Model/domínio: entidades e contratos
+├── features/auth/                # Sessão, autenticação e leitura de perfil
 └── lib/                          # Configuração de bibliotecas externas
 supabase/
 └── migrations/                   # Esquema do banco e políticas RLS versionados
@@ -58,9 +61,11 @@ O fluxo principal é **View (tela) → Controller (hook) → Service (regra de n
    EXPO_PUBLIC_SUPABASE_ANON_KEY=SUA_CHAVE_PUBLICA
    ```
 
-3. Reinicie o Expo. A chave `anon`/publishable pode ser usada no cliente porque a proteção dos dados é feita por RLS. **Nunca coloque a chave `service_role` no aplicativo.**
+3. Em **Authentication → URL Configuration**, configure o Site URL e adicione os Redirect URLs para a aplicação. O fluxo de confirmação retorna para `petconnect://auth/callback`; ao executar em Expo Go, use também o endereço de callback de desenvolvimento gerado pelo Expo.
+4. Em **Authentication → Providers → Email**, mantenha a confirmação de e-mail habilitada para cadastro.
+5. Reinicie o Expo. A chave `anon`/publishable pode ser usada no cliente porque a proteção dos dados é feita por RLS. **Nunca coloque a chave `service_role` no aplicativo.**
 
-O adaptador Supabase já lista, consulta e cadastra animais. O cadastro na fonte Supabase exige uma sessão autenticada; autenticação e perfis são próximos passos do desenvolvimento e ainda não fazem parte desta base. Em `demo`, o fluxo de cadastro pode ser exercitado sem conta. A base atual ainda não implementa o escopo completo do MVP.
+O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais de cadastro, confirmação de e-mail, login e perfil foram implementadas. A migration `20261007000000_create_profiles_and_auth.sql` deve ser aplicada depois da migration de animais; ela cria perfis a partir dos metadados do Auth e restringe a publicação a perfis do tipo doador/ONG. Em `demo`, autenticação real fica indisponível e o cadastro de animal continua liberado para experimentação local. A base ainda não implementa o escopo completo do MVP.
 
 ## Comandos
 
@@ -70,8 +75,8 @@ O adaptador Supabase já lista, consulta e cadastra animais. O cadastro na fonte
 
 ## Próximos passos sugeridos
 
-1. Implementar Supabase Auth com confirmação de e-mail, perfis e proteção de rotas.
-2. Evoluir as migrations com cidade/estado e permissões de perfil necessárias ao MVP.
+1. Validar o cadastro/login e aplicar as migrations no projeto de desenvolvimento Supabase.
+2. Evoluir o esquema com cidade/estado, validação em Android/Web e políticas de perfil necessárias ao MVP.
 3. Adicionar upload de até cinco fotos por animal, limite de 5 MB por arquivo antes da compressão e validação para exigir foto na publicação.
-4. Adicionar filtros por espécie, porte, cidade e estado, gestão dos anúncios do responsável e contato autenticado por WhatsApp.
+4. Adicionar filtros, gestão dos anúncios do responsável e contato autenticado por WhatsApp com telefone protegido.
 5. Criar testes dos serviços, validações, Storage e políticas RLS; avaliar chat/favoritos somente após o MVP.

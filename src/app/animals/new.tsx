@@ -1,12 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router, Stack } from "expo-router";
+import { Link, router, Stack } from "expo-router";
+import { useEffect } from "react";
 import { Controller, useForm, type Control } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import type { ReactNode } from "react";
 import { PrimaryButton } from "@/components/PrimaryButton";
+import { StateMessage } from "@/components/StateMessage";
 import { newAnimalSchema, type NewAnimalInput } from "@/features/animals/schemas/animal.schema";
 import { useCreateAnimal } from "@/features/animals/hooks/useAnimals";
 import type { AnimalHealth, AnimalSize, AnimalSpecies } from "@/features/animals/types";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 const speciesOptions: { value: AnimalSpecies; label: string }[] = [
   { value: "cachorro", label: "Cachorro" },
@@ -25,6 +28,7 @@ const healthOptions: { value: AnimalHealth; label: string }[] = [
 ];
 
 export default function NewAnimalScreen() {
+  const auth = useAuth();
   const createAnimal = useCreateAnimal();
   const { control, handleSubmit, formState: { errors } } = useForm<NewAnimalInput>({
     resolver: zodResolver(newAnimalSchema),
@@ -38,6 +42,30 @@ export default function NewAnimalScreen() {
       description: "",
     },
   });
+  const requiresDonorProfile = auth.available;
+
+  useEffect(() => {
+    if (auth.loading || auth.profileLoading || !auth.available || auth.session) return;
+    router.replace({ pathname: "/auth/login", params: { returnTo: "/animals/new" } });
+  }, [auth.available, auth.loading, auth.profileLoading, auth.session]);
+
+  if (requiresDonorProfile && (auth.loading || auth.profileLoading)) {
+    return <StateMessage message="Verificando sua conta..." loading />;
+  }
+  if (requiresDonorProfile && !auth.session) {
+    return <StateMessage message="Redirecionando para entrar..." loading />;
+  }
+  if (requiresDonorProfile && auth.profile?.profileType !== "doador_ong") {
+    return (
+      <View style={styles.accessMessage}>
+        <StateMessage message="Somente perfis de doador/ONG podem publicar animais." />
+        {auth.error ? <Text accessibilityRole="alert" style={styles.submitError}>{auth.error}</Text> : null}
+        <Link href="/account" asChild>
+          <PrimaryButton title="Ir para minha conta" variant="secondary" />
+        </Link>
+      </View>
+    );
+  }
 
   const onSubmit = handleSubmit(async (input) => {
     const animal = await createAnimal.mutateAsync(input);
@@ -153,6 +181,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 
 const styles = StyleSheet.create({
   container: { gap: 16, padding: 20, width: "100%", maxWidth: 680, alignSelf: "center" },
+  accessMessage: { flex: 1, gap: 16, justifyContent: "center", padding: 20, width: "100%", maxWidth: 680, alignSelf: "center" },
   intro: { color: "#62596a", fontSize: 15, lineHeight: 22, marginBottom: 2 },
   field: { gap: 7 },
   label: { color: "#30283a", fontSize: 15, fontWeight: "700" },
