@@ -44,7 +44,7 @@ O escopo funcional acordado para a primeira entrega está definido em [escopo-mv
 ### 1.3 Ressalvas sobre o plano gratuito
 
 - **Pausa por inatividade.** Projetos Supabase no plano Free são pausados após 7 dias sem atividade e precisam ser reativados manualmente. Mitigação: manter atividade regular (testes, commits com deploy) e reativar o projeto antes de apresentações e demonstrações.
-- **Limites.** 500 MB de banco, 1 GB de armazenamento de arquivos, 5 GB de tráfego mensal e 2 projetos ativos. Mitigação: comprimir e redimensionar as fotos dos animais no cliente antes do upload (`expo-image-manipulator`) e usar um projeto para desenvolvimento e outro para demonstração.
+- **Limites.** Os limites do plano Free podem mudar; consulte o painel Supabase para os valores atuais. Mitigação: comprimir e redimensionar as fotos dos animais no cliente antes do upload (`expo-image-manipulator`). A equipe optou por trabalhar com um único projeto Supabase por restrição de custo; nesse caso, identificar e limitar dados de teste, evitar operações destrutivas e nunca redefinir o banco de produção.
 - **Distribuição.** Para a banca, o aplicativo será demonstrado via Expo Go, APK de desenvolvimento (Android) e versão web. A publicação em lojas (Google Play e Apple Developer Program) é paga e está fora do escopo.
 - **Builds na nuvem.** O EAS Build do Expo possui cota gratuita limitada; se necessário, o APK pode ser gerado localmente.
 
@@ -137,19 +137,19 @@ Como o aplicativo acessa o banco diretamente por meio do Supabase, a proteção 
 
 Exemplos de políticas RLS:
 
-- `animals`: qualquer pessoa pode ler animais com status "disponível"; somente `owner_id = auth.uid()` pode inserir, editar ou remover.
+- `animals`: qualquer pessoa pode ler animais com status "available"; inserção, edição e remoção exigem sessão autenticada, `owner_id = auth.uid()` e perfil do tipo `doador_ong`.
 - `profiles`: dados de contato não são expostos na navegação pública; o contato via WhatsApp exige sessão autenticada e deve obedecer à política de acesso definida no banco.
 
 Validações críticas existem **também no banco** (constraints, tipos enumerados e RLS), nunca apenas no cliente.
 
 ---
 
-## 6. Modelo de Dados Inicial (PostgreSQL)
+## 6. Modelo de Dados Alvo (PostgreSQL)
 
 | Tabela | Campos principais |
 | --- | --- |
 | `profiles` | id (= auth.users.id), nome, tipo (`adotante` \| `doador_ong`), telefone, criado_em |
-| `animals` | id, owner_id, nome, especie (`cachorro` \| `gato` \| `outro`), raca, idade, porte, saude, descricao, cidade, estado, status, criado_em |
+| `animals` | Alvo: id, owner_id, nome, especie (`cachorro` \| `gato` \| `outro`), raca, idade, porte, saude, descricao, cidade, estado, status, criado_em. O esquema atualmente implementado ainda não inclui cidade nem estado; consulte o [guia de desenvolvimento](guia-desenvolvedor.md) para as colunas reais. |
 | `animal_photos` | id, animal_id, caminho do arquivo no Supabase Storage, ordem (de uma a cinco fotos por anúncio publicado) |
 | `interests` | Fora do MVP; avaliar somente se favoritos/intenção de adoção forem aprovados em uma evolução |
 | `conversations`, `messages` | Fora do MVP; criar somente se o chat interno for aprovado em uma evolução |
@@ -169,10 +169,8 @@ O MVP tem como plataformas-alvo Android e Web. Consulte o [índice da documenta�
 
 ## 8. Qualidade, Testes e Integração Contínua
 
-- **Testes unitários:** Jest, focados em Services e validadores Zod.
-- **Testes de fluxo de tela (opcional):** Maestro.
-- **Lint e formatação:** ESLint e Prettier.
-- **CI (GitHub Actions):** a cada Pull Request, executar `lint`, `tsc --noEmit` e os testes automatizados configurados no projeto.
+- **Direção planejada:** testes unitários para Services e validadores Zod; testes de fluxo de tela (por exemplo, Maestro); lint e formatação; CI que execute essas verificações e `tsc --noEmit`.
+- **Estado atual:** essas ferramentas de teste/lint e workflow de CI ainda não estão configuradas no projeto. O comando disponível é `npm run typecheck`; veja o [guia de desenvolvimento](guia-desenvolvedor.md) para as validações manuais existentes.
 
 ---
 

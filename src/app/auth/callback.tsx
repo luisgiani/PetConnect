@@ -27,15 +27,27 @@ export default function AuthCallbackScreen() {
     const tokenHash = getString(params.token_hash);
     const type = getString(params.type);
     const authError = getString(params.error_description);
-    if (!code && !tokenHash && !authError) return;
-
-    processed.current = true;
     if (authError) {
+      processed.current = true;
       setError(authError);
       setMessage("Não foi possível confirmar o e-mail.");
       return;
     }
 
+    if (!code && !(tokenHash && type && isEmailOtpType(type))) {
+      if (auth.loading) return;
+      processed.current = true;
+      if (auth.session) {
+        setMessage("E-mail confirmado. Abrindo sua conta...");
+        router.replace("/account");
+      } else {
+        setError("Não foi possível obter uma sessão. Tente entrar com seu e-mail e senha.");
+        setMessage("A confirmação terminou sem iniciar uma sessão.");
+      }
+      return;
+    }
+
+    processed.current = true;
     void (async () => {
       try {
         if (code) {
@@ -52,7 +64,7 @@ export default function AuthCallbackScreen() {
         setMessage("Não foi possível confirmar o e-mail.");
       }
     })();
-  }, [auth, params.code, params.error_description, params.token_hash, params.type]);
+  }, [auth, auth.loading, auth.session, params.code, params.error_description, params.token_hash, params.type]);
 
   return (
     <>

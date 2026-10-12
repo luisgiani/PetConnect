@@ -17,6 +17,8 @@ A documentação foi organizada por assunto. Consulte o [índice de documentos](
 
    ```text
    EXPO_PUBLIC_DATA_SOURCE=demo
+   EXPO_PUBLIC_SUPABASE_URL=
+   EXPO_PUBLIC_SUPABASE_KEY=
    ```
 
    O modo `demo` usa dados em memória e não requer credenciais. Os dados são perdidos ao reiniciar o app.
@@ -52,20 +54,22 @@ O fluxo principal é **View (tela) → Controller (hook) → Service (regra de n
 
 ## Conectar ao Supabase
 
-1. Crie um projeto Supabase e execute os arquivos SQL em `supabase/migrations/` pelo SQL Editor (ou configure a CLI do Supabase).
+1. Em um projeto Supabase novo, aplique as migrations de `supabase/migrations/` na ordem cronológica. Para um projeto já configurado, confirme que as tabelas e políticas correspondentes existem; **não execute de novo** scripts de migration sobre a produção.
 2. Copie as credenciais do projeto para o `.env` local:
 
    ```text
    EXPO_PUBLIC_DATA_SOURCE=supabase
    EXPO_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-   EXPO_PUBLIC_SUPABASE_ANON_KEY=SUA_CHAVE_PUBLICA
+   EXPO_PUBLIC_SUPABASE_KEY=sb_publishable_SUA_CHAVE_PUBLICA
    ```
 
-3. Em **Authentication → URL Configuration**, configure o Site URL e adicione os Redirect URLs para a aplicação. O fluxo de confirmação retorna para `petconnect://auth/callback`; ao executar em Expo Go, use também o endereço de callback de desenvolvimento gerado pelo Expo.
-4. Em **Authentication → Providers → Email**, mantenha a confirmação de e-mail habilitada para cadastro.
-5. Reinicie o Expo. A chave `anon`/publishable pode ser usada no cliente porque a proteção dos dados é feita por RLS. **Nunca coloque a chave `service_role` no aplicativo.**
+   No painel, obtenha a Project URL e a chave Publishable. O modal Connect mostra exemplos para diferentes frameworks; os exemplos `NEXT_PUBLIC_*` e a instalação de `@supabase/ssr` são específicos de Next.js e não devem ser copiados para este app Expo. Use a Project URL em `EXPO_PUBLIC_SUPABASE_URL` e a Publishable Key (`sb_publishable_...`) em `EXPO_PUBLIC_SUPABASE_KEY`. O código também aceita `EXPO_PUBLIC_SUPABASE_ANON_KEY` para compatibilidade com configurações anteriores. Crie `.env` na raiz do projeto, ao lado de `package.json`; não o versione.
 
-O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais de cadastro, confirmação de e-mail, login e perfil foram implementadas. A migration `20261007000000_create_profiles_and_auth.sql` deve ser aplicada depois da migration de animais; ela cria perfis a partir dos metadados do Auth e restringe a publicação a perfis do tipo doador/ONG. Em `demo`, autenticação real fica indisponível e o cadastro de animal continua liberado para experimentação local. A base ainda não implementa o escopo completo do MVP.
+3. Em **Authentication → URL Configuration**, configure o Site URL como `http://localhost:8081` e permita `http://localhost:8081/auth/callback` em Redirect URLs para o teste Web. Para Android/Expo Go, adicione o endereço de callback gerado para o ambiente/dispositivo usado.
+4. Em **Authentication → Sign In / Providers → Email**, mantenha o provedor habilitado e a confirmação de e-mail ativa. **Authentication → Emails → Confirm sign up** controla o modelo do e-mail; não configura, por si só, a entrega SMTP.
+5. Reinicie o Expo depois de salvar `.env`. Use somente a chave Publishable no app; **nunca coloque uma chave `sb_secret_...` ou `service_role` no cliente**.
+
+O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais de cadastro, confirmação de e-mail, login e perfil foram implementadas. Em um banco novo, a migration `20261007000000_create_profiles_and_auth.sql` deve ser aplicada depois da migration de animais; ela cria perfis a partir dos metadados do Auth e restringe a publicação a perfis do tipo doador/ONG. Em `demo`, autenticação real fica indisponível e o cadastro de animal continua liberado para experimentação local. A base ainda não implementa o escopo completo do MVP. Consulte o [guia de desenvolvimento](Documentos/Arquitetura/guia-desenvolvedor.md) para o mapa do código, validação e dados de teste.
 
 ## Comandos
 
@@ -75,7 +79,7 @@ O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais d
 
 ## Próximos passos sugeridos
 
-1. Validar o cadastro/login e aplicar as migrations no projeto de desenvolvimento Supabase.
+1. Validar cadastro/login, confirmação de e-mail e permissões no projeto Supabase configurado, usando contas e dados identificáveis de teste; não redefinir nem reaplicar migrations na produção.
 2. Evoluir o esquema com cidade/estado, validação em Android/Web e políticas de perfil necessárias ao MVP.
 3. Adicionar upload de até cinco fotos por animal, limite de 5 MB por arquivo antes da compressão e validação para exigir foto na publicação.
 4. Adicionar filtros, gestão dos anúncios do responsável e contato autenticado por WhatsApp com telefone protegido.
