@@ -6,10 +6,11 @@ Use estes materiais nesta ordem ao implementar ou validar uma funcionalidade:
 
 1. **[Escopo do MVP](Produto/escopo-mvp.md)** — fonte de verdade para funcionalidades, plataformas, regras de produto e critérios de aceite.
 2. **[Arquitetura técnica](Arquitetura/arquitetura-tecnica.md)** — fonte de verdade para stack, camadas, integrações, modelo de dados e segurança técnica.
-3. **[Pré-projeto do TCC — versão alinhada ao MVP](Produto/pre-projeto-mvp.md)** — descrição acadêmica do problema, objetivo e metodologia. A cópia oficial em Word está ao lado.
-4. **[Especificação das telas](Design/especificacao-de-telas.md)** — conteúdo e estados de cada tela para implementação.
-5. **[Protótipo de fluxo do MVP](Design/fluxo-mvp.svg)** — referência visual dos fluxos.
-6. **[README do repositório](../README.md)** — instruções de instalação e execução do código existente.
+3. **[Guia de desenvolvimento](Arquitetura/guia-desenvolvedor.md)** — preparação do ambiente, mapa do código, fluxos de dados, validação e inserção de anúncio de teste.
+4. **[Pré-projeto do TCC — versão alinhada ao MVP](Produto/pre-projeto-mvp.md)** — descrição acadêmica do problema, objetivo e metodologia. A cópia oficial em Word está ao lado.
+5. **[Especificação das telas](Design/especificacao-de-telas.md)** — conteúdo e estados de cada tela para implementação.
+6. **[Protótipo de fluxo do MVP](Design/fluxo-mvp.svg)** — referência visual dos fluxos.
+7. **[README do repositório](../README.md)** — resumo e instruções iniciais de execução.
 
 Se houver divergência, o escopo define **o que entregar**; a arquitetura define **como implementar**. O código não deve ser tratado como prova de que um requisito está concluído: compare-o com os critérios de aceite e valide-o com testes.
 
@@ -23,6 +24,7 @@ O Markdown do pré-projeto é a fonte editável preferida para mudanças de cont
 | [Produto/pre-projeto-mvp.md](Produto/pre-projeto-mvp.md) | Texto-fonte em Markdown para o pré-projeto acadêmico. |
 | [Produto/pre-projeto-mvp.docx](Produto/pre-projeto-mvp.docx) | Cópia editável do pré-projeto alinhada ao escopo. |
 | [Arquitetura/arquitetura-tecnica.md](Arquitetura/arquitetura-tecnica.md) | Decisões técnicas e arquitetura. |
+| [Arquitetura/guia-desenvolvedor.md](Arquitetura/guia-desenvolvedor.md) | Onboarding, execução, estrutura do código, fluxo do sistema, validação e dados de teste. |
 | [Design/especificacao-de-telas.md](Design/especificacao-de-telas.md) | Requisitos de apresentação, telas, estados e fluxos. |
 | [Design/fluxo-mvp.svg](Design/fluxo-mvp.svg) | Diagrama visual dos fluxos do MVP. |
 
