@@ -3,12 +3,22 @@ export type AnimalSize = "pequeno" | "medio" | "grande";
 export type AnimalHealth = "saudavel" | "em_tratamento" | "nao_informado";
 export type AnimalStatus = "available" | "adopted";
 
+export type AnimalPhotoInput = {
+  uri: string;
+  fileSize: number;
+  width: number;
+  height: number;
+};
+
 export type Animal = {
   id: string;
   ownerId: string;
   name: string;
   species: AnimalSpecies;
   breed: string | null;
+  city: string | null;
+  state: string | null;
+  photos: string[];
   ageMonths: number;
   size: AnimalSize;
   healthStatus: AnimalHealth;
@@ -17,7 +27,11 @@ export type Animal = {
   createdAt: string;
 };
 
-export type NewAnimal = Omit<Animal, "id" | "ownerId" | "status" | "createdAt">;
+export type NewAnimal = Omit<Animal, "id" | "ownerId" | "status" | "createdAt" | "city" | "state" | "photos"> & {
+  city: string;
+  state: string;
+  photos: AnimalPhotoInput[];
+};
 
 export type AnimalRepository = {
   listAvailable(): Promise<Animal[]>;

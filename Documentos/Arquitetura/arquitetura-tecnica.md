@@ -149,7 +149,7 @@ Validações críticas existem **também no banco** (constraints, tipos enumerad
 | Tabela | Campos principais |
 | --- | --- |
 | `profiles` | id (= auth.users.id), nome, tipo (`adotante` \| `doador_ong`), telefone, criado_em |
-| `animals` | Alvo: id, owner_id, nome, especie (`cachorro` \| `gato` \| `outro`), raca, idade, porte, saude, descricao, cidade, estado, status, criado_em. O esquema atualmente implementado ainda não inclui cidade nem estado; consulte o [guia de desenvolvimento](guia-desenvolvedor.md) para as colunas reais. |
+| `animals` | id, owner_id, nome, especie (`cachorro` \| `gato` \| `outro`), raca, idade, porte, saude, descricao, cidade, estado, photo_paths (1–5 caminhos de fotos), status, criado_em. As migrations de localização/fotos preservam anúncios anteriores com colunas nulas ou lista de fotos vazia; novos anúncios exigem cidade, estado e ao menos uma foto. |
 | `animal_photos` | id, animal_id, caminho do arquivo no Supabase Storage, ordem (de uma a cinco fotos por anúncio publicado) |
 | `interests` | Fora do MVP; avaliar somente se favoritos/intenção de adoção forem aprovados em uma evolução |
 | `conversations`, `messages` | Fora do MVP; criar somente se o chat interno for aprovado em uma evolução |

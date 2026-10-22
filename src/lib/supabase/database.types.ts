@@ -31,6 +31,9 @@ export type Database = {
           name: string;
           species: AnimalSpecies;
           breed: string | null;
+          city: string | null;
+          state: string | null;
+          photo_paths: string[];
           age_months: number;
           size: AnimalSize;
           health_status: AnimalHealth;
@@ -44,6 +47,9 @@ export type Database = {
           name: string;
           species: AnimalSpecies;
           breed?: string | null;
+          city?: string | null;
+          state?: string | null;
+          photo_paths?: string[];
           age_months: number;
           size: AnimalSize;
           health_status: AnimalHealth;
@@ -55,6 +61,9 @@ export type Database = {
           name?: string;
           species?: AnimalSpecies;
           breed?: string | null;
+          city?: string | null;
+          state?: string | null;
+          photo_paths?: string[];
           age_months?: number;
           size?: AnimalSize;
           health_status?: AnimalHealth;

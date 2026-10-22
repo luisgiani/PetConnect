@@ -27,7 +27,7 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 
 ### 3. Detalhes do animal
 
-- Apresentar de uma a cinco fotos, informações, localização e descrição.
+- Apresentar a galeria em destaque no topo, com uma foto por vez, setas anterior/próxima e indicador da posição. Abaixo, mostrar nome e localização, informações principais em cartões e depois a descrição.
 - Oferecer **Entrar em contato pelo WhatsApp**.
 - Sem sessão, orientar a pessoa a entrar ou criar conta e, após autenticar, retomar o animal solicitado.
 - Não exibir telefone a visitantes anônimos nem em resultados públicos.
