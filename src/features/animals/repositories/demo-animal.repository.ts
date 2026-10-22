@@ -7,6 +7,9 @@ const demoAnimals: Animal[] = [
     name: "Mel",
     species: "cachorro",
     breed: "SRD",
+    city: "São Paulo",
+    state: "SP",
+    photos: [],
     ageMonths: 24,
     size: "medio",
     healthStatus: "saudavel",
@@ -20,6 +23,9 @@ const demoAnimals: Animal[] = [
     name: "Thor",
     species: "gato",
     breed: "Sem raça definida",
+    city: "Campinas",
+    state: "SP",
+    photos: [],
     ageMonths: 12,
     size: "pequeno",
     healthStatus: "saudavel",
@@ -33,6 +39,9 @@ const demoAnimals: Animal[] = [
     name: "Luna",
     species: "cachorro",
     breed: "SRD",
+    city: "Santos",
+    state: "SP",
+    photos: [],
     ageMonths: 6,
     size: "pequeno",
     healthStatus: "nao_informado",
@@ -60,6 +69,7 @@ export class DemoAnimalRepository implements AnimalRepository {
       ownerId: "demo-doador",
       status: "available",
       createdAt: new Date().toISOString(),
+      photos: input.photos.map((photo) => photo.uri),
     };
     this.animals.unshift(animal);
     return animal;

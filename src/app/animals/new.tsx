@@ -1,14 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, Stack } from "expo-router";
-import { useEffect } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { useEffect, useState } from "react";
 import { Controller, useForm, type Control } from "react-hook-form";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import type { ReactNode } from "react";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { StateMessage } from "@/components/StateMessage";
 import { newAnimalSchema, type NewAnimalInput } from "@/features/animals/schemas/animal.schema";
 import { useCreateAnimal } from "@/features/animals/hooks/useAnimals";
-import type { AnimalHealth, AnimalSize, AnimalSpecies } from "@/features/animals/types";
+import { MAX_ANIMAL_PHOTOS, MAX_PHOTO_SIZE_BYTES } from "@/features/animals/photo.constants";
+import type { AnimalHealth, AnimalPhotoInput, AnimalSize, AnimalSpecies } from "@/features/animals/types";
 import { useAuth } from "@/features/auth/AuthProvider";
 
 const speciesOptions: { value: AnimalSpecies; label: string }[] = [
@@ -30,12 +32,17 @@ const healthOptions: { value: AnimalHealth; label: string }[] = [
 export default function NewAnimalScreen() {
   const auth = useAuth();
   const createAnimal = useCreateAnimal();
-  const { control, handleSubmit, formState: { errors } } = useForm<NewAnimalInput>({
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<NewAnimalInput>({
     resolver: zodResolver(newAnimalSchema),
     defaultValues: {
       name: "",
       species: "cachorro",
       breed: "",
+      city: "",
+      state: "",
+      photos: [],
       ageMonths: 0,
       size: "medio",
       healthStatus: "nao_informado",
@@ -68,9 +75,60 @@ export default function NewAnimalScreen() {
   }
 
   const onSubmit = handleSubmit(async (input) => {
-    const animal = await createAnimal.mutateAsync(input);
-    router.replace({ pathname: "/animals/[id]", params: { id: animal.id } });
+    setSubmitError(null);
+    try {
+      const animal = await createAnimal.mutateAsync(input);
+      router.replace({ pathname: "/animals/[id]", params: { id: animal.id } });
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Não foi possível cadastrar o animal.");
+    }
   });
+
+  const selectedPhotos = watch("photos");
+
+  async function selectPhotos() {
+    setPhotoError(null);
+    const remainingSlots = MAX_ANIMAL_PHOTOS - selectedPhotos.length;
+    if (remainingSlots <= 0) {
+      setPhotoError(`Você pode adicionar no máximo ${MAX_ANIMAL_PHOTOS} fotos.`);
+      return;
+    }
+
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsMultipleSelection: true,
+        selectionLimit: remainingSlots,
+        quality: 1,
+      });
+      if (result.canceled) return;
+
+      const addedPhotos = await Promise.all(result.assets.map(async (asset): Promise<AnimalPhotoInput> => ({
+        uri: asset.uri,
+        fileSize: asset.fileSize ?? asset.file?.size ?? await getLocalFileSize(asset.uri),
+        width: asset.width,
+        height: asset.height,
+      })));
+
+      if (selectedPhotos.length + addedPhotos.length > MAX_ANIMAL_PHOTOS) {
+        setPhotoError(`Um anúncio pode ter no máximo ${MAX_ANIMAL_PHOTOS} fotos.`);
+        return;
+      }
+      if (addedPhotos.some((photo) => photo.fileSize > MAX_PHOTO_SIZE_BYTES)) {
+        setPhotoError("Uma ou mais fotos ultrapassam 5 MB. Remova-as e selecione arquivos menores.");
+        return;
+      }
+
+      setValue("photos", [...selectedPhotos, ...addedPhotos], { shouldDirty: true, shouldValidate: true });
+    } catch (error) {
+      setPhotoError(error instanceof Error ? error.message : "Não foi possível selecionar as fotos.");
+    }
+  }
+
+  function removePhoto(index: number) {
+    const nextPhotos = selectedPhotos.filter((_, photoIndex) => photoIndex !== index);
+    setValue("photos", nextPhotos, { shouldDirty: true, shouldValidate: true });
+  }
 
   return (
     <>
@@ -101,6 +159,26 @@ export default function NewAnimalScreen() {
           />
         </Field>
 
+        <Field label="Cidade" error={errors.city?.message}>
+          <Controller
+            control={control}
+            name="city"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput accessibilityLabel="Cidade" onBlur={onBlur} onChangeText={onChange} value={value} placeholder="Ex.: São Paulo" style={styles.input} />
+            )}
+          />
+        </Field>
+
+        <Field label="Estado (UF)" error={errors.state?.message}>
+          <Controller
+            control={control}
+            name="state"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput accessibilityLabel="Estado (UF)" autoCapitalize="characters" maxLength={2} onBlur={onBlur} onChangeText={onChange} value={value} placeholder="Ex.: SP" style={styles.input} />
+            )}
+          />
+        </Field>
+
         <Field label="Idade (em meses)" error={errors.ageMonths?.message}>
           <Controller
             control={control}
@@ -119,6 +197,32 @@ export default function NewAnimalScreen() {
           <ChoiceField control={control} name="healthStatus" options={healthOptions} />
         </Field>
 
+        <Field label={`Fotos (${selectedPhotos.length}/${MAX_ANIMAL_PHOTOS})`} error={errors.photos?.message}>
+          <Text style={styles.photoHint}>Adicione pelo menos uma foto. Cada arquivo pode ter até 5 MB antes da compressão.</Text>
+          <View style={styles.photoList}>
+            {selectedPhotos.map((photo, index) => (
+              <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
+                <Image source={{ uri: photo.uri }} style={styles.photoPreview} />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Remover foto ${index + 1}`}
+                  onPress={() => removePhoto(index)}
+                  style={styles.removePhoto}
+                >
+                  <Text style={styles.removePhotoText}>Remover</Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
+          <PrimaryButton
+            title={selectedPhotos.length ? "＋  Adicionar fotos" : "＋  Selecionar fotos"}
+            variant="secondary"
+            onPress={() => void selectPhotos()}
+            disabled={selectedPhotos.length >= MAX_ANIMAL_PHOTOS || createAnimal.isPending}
+          />
+          {photoError ? <Text accessibilityRole="alert" style={styles.error}>{photoError}</Text> : null}
+        </Field>
+
         <Field label="Descrição" error={errors.description?.message}>
           <Controller
             control={control}
@@ -129,11 +233,17 @@ export default function NewAnimalScreen() {
           />
         </Field>
 
-        {createAnimal.error ? <Text accessibilityRole="alert" style={styles.submitError}>{createAnimal.error.message}</Text> : null}
+        {submitError ? <Text accessibilityRole="alert" style={styles.submitError}>{submitError}</Text> : null}
         <PrimaryButton title={createAnimal.isPending ? "Cadastrando..." : "Cadastrar"} onPress={() => void onSubmit()} disabled={createAnimal.isPending} />
       </ScrollView>
     </>
   );
+}
+
+async function getLocalFileSize(uri: string): Promise<number> {
+  const response = await fetch(uri);
+  if (!response.ok) throw new Error("Não foi possível verificar o tamanho de uma foto.");
+  return (await response.arrayBuffer()).byteLength;
 }
 
 type ChoiceControl = {
@@ -187,6 +297,12 @@ const styles = StyleSheet.create({
   label: { color: "#30283a", fontSize: 15, fontWeight: "700" },
   input: { backgroundColor: "#fff", borderColor: "#e5dce9", borderRadius: 10, borderWidth: 1, color: "#30283a", minHeight: 46, paddingHorizontal: 12 },
   textarea: { minHeight: 110, paddingTop: 12 },
+  photoHint: { color: "#726a78", fontSize: 13, lineHeight: 19 },
+  photoList: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  photoItem: { alignItems: "center", gap: 6 },
+  photoPreview: { backgroundColor: "#fff0dc", borderRadius: 10, height: 96, width: 96 },
+  removePhoto: { padding: 6 },
+  removePhotoText: { color: "#b3261e", fontSize: 13, fontWeight: "600" },
   choices: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   choice: { backgroundColor: "#fff", borderColor: "#e5dce9", borderRadius: 10, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10 },
   choiceSelected: { backgroundColor: "#f0e8ff", borderColor: "#b69bdf" },

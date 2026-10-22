@@ -69,7 +69,7 @@ O fluxo principal é **View (tela) → Controller (hook) → Service (regra de n
 4. Em **Authentication → Sign In / Providers → Email**, mantenha o provedor habilitado e a confirmação de e-mail ativa. **Authentication → Emails → Confirm sign up** controla o modelo do e-mail; não configura, por si só, a entrega SMTP.
 5. Reinicie o Expo depois de salvar `.env`. Use somente a chave Publishable no app; **nunca coloque uma chave `sb_secret_...` ou `service_role` no cliente**.
 
-O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais de cadastro, confirmação de e-mail, login e perfil foram implementadas. Em um banco novo, a migration `20261007000000_create_profiles_and_auth.sql` deve ser aplicada depois da migration de animais; ela cria perfis a partir dos metadados do Auth e restringe a publicação a perfis do tipo doador/ONG. Em `demo`, autenticação real fica indisponível e o cadastro de animal continua liberado para experimentação local. A base ainda não implementa o escopo completo do MVP. Consulte o [guia de desenvolvimento](Documentos/Arquitetura/guia-desenvolvedor.md) para o mapa do código, validação e dados de teste.
+O adaptador Supabase já lista, consulta, cadastra animais e envia fotos. As telas iniciais de cadastro, confirmação de e-mail, login e perfil foram implementadas. Em um banco novo, aplique as migrations em ordem; em um banco já configurado, aplique somente migrations pendentes. As migrations de localização e fotos adicionam cidade, estado e Storage sem apagar anúncios existentes. Em `demo`, autenticação real fica indisponível e os anúncios criados ficam apenas em memória. A base ainda não implementa o escopo completo do MVP. Consulte o [guia de desenvolvimento](Documentos/Arquitetura/guia-desenvolvedor.md) para o mapa do código, validação e dados de teste.
 
 ## Comandos
 
@@ -79,8 +79,7 @@ O adaptador Supabase já lista, consulta e cadastra animais. As telas iniciais d
 
 ## Próximos passos sugeridos
 
-1. Validar cadastro/login, confirmação de e-mail e permissões no projeto Supabase configurado, usando contas e dados identificáveis de teste; não redefinir nem reaplicar migrations na produção.
-2. Evoluir o esquema com cidade/estado, validação em Android/Web e políticas de perfil necessárias ao MVP.
-3. Adicionar upload de até cinco fotos por animal, limite de 5 MB por arquivo antes da compressão e validação para exigir foto na publicação.
-4. Adicionar filtros, gestão dos anúncios do responsável e contato autenticado por WhatsApp com telefone protegido.
-5. Criar testes dos serviços, validações, Storage e políticas RLS; avaliar chat/favoritos somente após o MVP.
+1. Aplicar as migrations pendentes de localização e fotos no Supabase configurado, em ordem e sem reset; depois testar criação com conta doadora.
+2. Implementar filtros por espécie, porte, cidade e estado e validar o fluxo em Android/Web.
+3. Adicionar gestão dos anúncios do responsável e contato autenticado por WhatsApp com telefone protegido.
+4. Criar testes dos serviços, validações, Storage e políticas RLS; avaliar chat/favoritos somente após o MVP.

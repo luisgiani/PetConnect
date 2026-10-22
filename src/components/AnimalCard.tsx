@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import type { Animal } from "@/features/animals/types";
 
 type AnimalCardProps = { animal: Animal };
@@ -8,13 +8,13 @@ export function AnimalCard({ animal }: AnimalCardProps) {
   return (
     <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
       <Pressable accessibilityRole="link" style={styles.card}>
-        <View style={styles.avatar}>
-          <Text style={styles.emoji}>{animal.species === "gato" ? "🐱" : "🐶"}</Text>
-        </View>
+        {animal.photos[0]
+          ? <Image source={{ uri: animal.photos[0] }} style={styles.avatar} />
+          : <View style={styles.avatar}><Text style={styles.emoji}>{animal.species === "gato" ? "🐱" : "🐶"}</Text></View>}
         <View style={styles.details}>
           <Text style={styles.name}>{animal.name}</Text>
           <Text style={styles.subtitle}>{formatAge(animal.ageMonths)} · {animal.breed || labelSpecies(animal.species)}</Text>
-          <Text style={styles.subtitle}>Porte {animal.size}</Text>
+          <Text style={styles.subtitle}>Porte {animal.size} · {formatLocation(animal.city, animal.state)}</Text>
         </View>
         <Text style={styles.arrow}>›</Text>
       </Pressable>
@@ -33,6 +33,11 @@ function labelSpecies(species: Animal["species"]): string {
   return species === "cachorro" ? "Cachorro" : species === "gato" ? "Gato" : "Outro";
 }
 
+function formatLocation(city: string | null, state: string | null): string {
+  if (city && state) return `${city} - ${state}`;
+  return city || state || "Localização não informada";
+}
+
 const styles = StyleSheet.create({
   card: {
     alignItems: "center",
@@ -45,14 +50,18 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   avatar: {
-    alignItems: "center",
     backgroundColor: "#fff0dc",
     borderRadius: 12,
     height: 76,
-    justifyContent: "center",
     width: 76,
   },
-  emoji: { fontSize: 42 },
+  emoji: {
+    alignItems: "center",
+    fontSize: 42,
+    textAlign: "center",
+    textAlignVertical: "center",
+    lineHeight: 76,
+  },
   details: { flex: 1, gap: 5 },
   name: { color: "#30283a", fontSize: 18, fontWeight: "700" },
   subtitle: { color: "#726a78", fontSize: 14 },

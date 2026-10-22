@@ -101,6 +101,10 @@ As migrations são aplicadas em ordem cronológica:
 
 - `20261001000000_create_animals.sql`: tabela `public.animals`, restrições, índice e policies RLS.
 - `20261007000000_create_profiles_and_auth.sql`: tabela `public.profiles`, trigger de perfil e policies que restringem escrita de anúncios a doadores/ONGs autenticados.
+- `20261021000000_add_animal_location.sql`: adiciona `city` e `state` e valida os valores quando informados.
+- `20261021000001_add_animal_photos_storage.sql`: adiciona os caminhos de fotos, valida até cinco fotos e configura o bucket público `animal-photos` com leitura pública e upload/exclusão apenas por doadores autenticados.
+
+Para atualizar um banco já existente, aplique as migrations pendentes em ordem, uma vez cada. Se a migration de localização ainda não foi aplicada, execute-a antes da migration de fotos. Não execute novamente migrations já aplicadas nem use reset. As colunas `city`/`state` e `photo_paths` preservam os anúncios existentes: registros antigos ficam sem localização e com lista de fotos vazia; os novos anúncios enviados pelo app exigem cidade, UF e ao menos uma foto.
 
 Colunas atuais de `public.animals`:
 
@@ -111,6 +115,9 @@ Colunas atuais de `public.animals`:
 | `name` | `text` | Obrigatório; 2–80 caracteres. |
 | `species` | `text` | `cachorro`, `gato` ou `outro`. |
 | `breed` | `text` | Opcional; até 60 caracteres. |
+| `city` | `text` | Nulo para anúncios anteriores; novos anúncios exigem 2–80 caracteres. |
+| `state` | `text` | Nulo para anúncios anteriores; novos anúncios exigem uma UF brasileira válida em maiúsculas. |
+| `photo_paths` | `text[]` | Caminhos no bucket público `animal-photos`; novos anúncios exigem 1–5 arquivos. Anúncios anteriores podem permanecer vazios. |
 | `age_months` | `integer` | Obrigatório; 0–600. |
 | `size` | `text` | `pequeno`, `medio` ou `grande`. |
 | `health_status` | `text` | `saudavel`, `em_tratamento` ou `nao_informado`. |
@@ -122,41 +129,9 @@ As colunas `id`, `status` e `created_at` têm padrões no banco e podem ser omit
 
 ## 5. Inserir um anúncio de teste
 
-Para validar se a listagem conectada ao Supabase lê a tabela, crie primeiro uma conta de teste do tipo doador/ONG e confirme o e-mail. No Table Editor, copie o `id` dessa conta na tabela `profiles`. No SQL Editor do projeto, execute este insert substituindo somente `UUID_DO_PERFIL_Doador` pelo UUID real:
+Para validar o fluxo completo após aplicar as migrations pendentes, use o formulário do app com uma conta de teste autenticada do tipo doador/ONG. Selecione de uma a cinco fotos e preencha os outros campos obrigatórios; o app rejeita arquivos acima de 5 MB antes da compressão, reduz as imagens para JPEG (máximo 5 MB por arquivo após compressão) e envia ao Storage antes de gravar o anúncio. Se o insert falhar depois do upload, o app tenta remover os arquivos recém-enviados e apresenta eventual falha de limpeza.
 
-```sql
-insert into public.animals (
-  id,
-  owner_id,
-  name,
-  species,
-  breed,
-  age_months,
-  size,
-  health_status,
-  description,
-  status,
-  created_at
-)
-values (
-  gen_random_uuid(),
-  'UUID_DO_PERFIL_Doador',
-  'Bidu',
-  'cachorro',
-  'SRD',
-  24,
-  'medio',
-  'saudavel',
-  'Bidu é carinhoso, sociável e procura uma família responsável.',
-  'available',
-  now()
-)
-returning *;
-```
-
-Depois, atualize a tela **Adotar um animal**. O registro deve aparecer como Bidu. Se ele aparecer no Table Editor mas não no app, confira que `status` está como `available`, que o `.env` aponta para o mesmo projeto aberto no painel, e veja se a tela apresentou uma mensagem de erro em vez do estado vazio.
-
-O SQL Editor usa privilégios administrativos; esse insert valida a leitura pública, mas **não** valida as permissões de escrita do app nem as policies RLS. Não use um UUID arbitrário para `owner_id`. O insert cria um registro persistente no projeto de produção; depois do teste, localize apenas o Bidu de teste pelo `id` retornado e exclua somente essa linha, se desejar.
+Após publicar, o anúncio deve aparecer na lista, a foto principal no cartão e todas as fotos no detalhe. No painel, confira a linha em `public.animals` e os arquivos em **Storage → animal-photos**. O bucket é público para que visitantes vejam imagens dos anúncios; nunca envie imagens privadas ou dados pessoais. Upload e exclusão de objetos são limitados por policy ao diretório do usuário e ao perfil doador/ONG.
 
 ## 6. Como validar mudanças
 
@@ -173,7 +148,7 @@ O `package.json` não define atualmente um script de testes automatizados. Não 
 1. Com `EXPO_PUBLIC_DATA_SOURCE=demo`, abra a página inicial, liste os três animais de demonstração e acesse um detalhe.
 2. Com Supabase configurado, confirme que a lista reflete linhas com status `available` no projeto indicado pelo `.env`.
 3. Teste cadastro, confirmação de e-mail, login, restauração da sessão e logout com contas de teste.
-4. Teste o cadastro de animal por uma conta do tipo doador/ONG; confirme que adotante e usuário anônimo não conseguem gravar anúncios.
+4. Teste o cadastro de animal por uma conta do tipo doador/ONG: sem fotos, com seis fotos e com uma foto acima de 5 MB o formulário deve impedir a publicação; com uma a cinco fotos válidas deve comprimir, enviar e publicar. Confirme que adotante e usuário anônimo não conseguem gravar anúncios nem enviar fotos.
 5. Verifique erro de rede, lista vazia e validação de formulário. Confira Web e Android para qualquer mudança de interface.
 6. Antes de alterar policies ou esquema, leia as migrations e planeje uma migration nova. Nunca edite/aplique novamente uma migration já executada na produção sem uma estratégia explícita.
 
@@ -181,4 +156,4 @@ Ao fazer uma mudança, siga o fluxo completo: atualizar requisito se o comportam
 
 ## 7. Limites conhecidos da implementação
 
-O código atual já tem lista, detalhe, cadastro básico, autenticação, perfil e conexão inicial com Supabase. Isso não significa que o MVP esteja completo. Ainda precisam ser implementados, conforme o [escopo do MVP](../Produto/escopo-mvp.md), filtros e campos de localização, fotos no Storage, gestão dos próprios anúncios, contato via WhatsApp com proteção de telefone, e validação abrangente de RLS e dos fluxos Web/Android.
+O código atual já tem lista, detalhe, cadastro com cidade/UF e fotos, autenticação, perfil e conexão inicial com Supabase. Isso não significa que o MVP esteja completo. Ainda precisam ser implementados, conforme o [escopo do MVP](../Produto/escopo-mvp.md), filtros, gestão dos próprios anúncios, contato via WhatsApp com proteção de telefone, e validação abrangente de RLS e dos fluxos Web/Android.
