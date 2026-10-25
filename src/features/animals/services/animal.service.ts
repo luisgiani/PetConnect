@@ -1,10 +1,14 @@
-import type { Animal, AnimalRepository, NewAnimal } from "@/features/animals/types";
+import type { Animal, AnimalFilters, AnimalRepository, NewAnimal } from "@/features/animals/types";
 
 export class AnimalService {
   constructor(private readonly repository: AnimalRepository) {}
 
-  listAvailable(): Promise<Animal[]> {
-    return this.repository.listAvailable();
+  listAvailable(filters?: AnimalFilters): Promise<Animal[]> {
+    return this.repository.listAvailable(filters);
+  }
+
+  listMine(): Promise<Animal[]> {
+    return this.repository.listMine();
   }
 
   getById(id: string): Promise<Animal | null> {

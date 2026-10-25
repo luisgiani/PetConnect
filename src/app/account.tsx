@@ -39,7 +39,12 @@ export default function AccountScreen() {
             <Text style={styles.message}>Perfil: {auth.profile.profileType === "doador_ong" ? "Doador/ONG" : "Adotante"}</Text>
             <Text style={styles.message}>{auth.session?.user.email}</Text>
             {auth.profile.profileType === "doador_ong" ? (
-              <Text style={styles.message}>Telefone cadastrado: {auth.profile.phone || "Não informado"}</Text>
+              <>
+                <Text style={styles.message}>Telefone cadastrado: {auth.profile.phone || "Não informado"}</Text>
+                <Link href="/animals/manage" asChild>
+                  <PrimaryButton title="Gerenciar meus anúncios" variant="secondary" />
+                </Link>
+              </>
             ) : null}
             <PrimaryButton title="Sair da conta" onPress={() => void onSignOut()} />
           </>

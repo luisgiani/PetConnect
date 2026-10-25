@@ -80,14 +80,18 @@ Documentos/                      # Requisitos, arquitetura e design
 
 ### Fluxo de leitura da lista
 
-1. `src/app/animals/index.tsx` exibe a tela e chama `useAnimals`.
-2. `src/features/animals/hooks/useAnimals.ts` consulta o serviço usando TanStack Query.
-3. `src/features/animals/services/animal.service.ts` encaminha a operação de domínio.
+1. `src/app/animals/index.tsx` exibe a tela, mantém os filtros em edição e aplica-os quando a pessoa toca em **Buscar animais**.
+2. `src/features/animals/hooks/useAnimals.ts` inclui os filtros na chave de cache do TanStack Query e consulta o serviço.
+3. `src/features/animals/services/animal.service.ts` encaminha os filtros ao repositório.
 4. `src/features/animals/repository.ts` escolhe demo ou Supabase com base em `EXPO_PUBLIC_DATA_SOURCE`.
-5. `DemoAnimalRepository` lê os dados locais; `SupabaseAnimalRepository` consulta `public.animals`, filtra `available` e converte o formato SQL para o tipo `Animal`.
-6. A tela apresenta carregamento, erro, estado vazio ou os cartões recebidos.
+5. `DemoAnimalRepository` aplica os filtros localmente; `SupabaseAnimalRepository` filtra os anúncios `available` no banco: espécie e porte por igualdade, cidade por correspondência parcial sem diferenciar maiúsculas/minúsculas, e estado por UF exata normalizada em maiúsculas.
+6. A tela apresenta carregamento, erro, estado vazio (com mensagem específica quando filtros não encontram resultados) ou os cartões recebidos.
 
 O detalhe segue o mesmo caminho, usando `useAnimal(id)` e a consulta por identificador. A criação usa o hook de mutation e o repositório selecionado. No Supabase, o repositório obtém o usuário autenticado para preencher `owner_id`; as policies do banco continuam sendo a autoridade final sobre o que cada conta pode alterar.
+
+### Área do doador/ONG
+
+Em **Minha conta**, perfis `doador_ong` acessam **Gerenciar meus anúncios** (`src/app/animals/manage.tsx`). A tela consulta somente os anúncios da sessão atual com `listMine`, oferece edição pelo formulário compartilhado (`/animals/new?animalId=...`) e alterna o status entre `available` e `adopted`. A policy RLS no Supabase continua garantindo que somente o proprietário possa consultar/alterar seus registros; a filtragem por `owner_id` no repositório não substitui essa proteção. Ao editar fotos, arquivos mantidos permanecem no Storage, novos arquivos são enviados antes de salvar e arquivos removidos são excluídos após o banco confirmar a atualização.
 
 ### Fluxo de autenticação
 
@@ -149,11 +153,13 @@ O `package.json` não define atualmente um script de testes automatizados. Não 
 2. Com Supabase configurado, confirme que a lista reflete linhas com status `available` no projeto indicado pelo `.env`.
 3. Teste cadastro, confirmação de e-mail, login, restauração da sessão e logout com contas de teste.
 4. Teste o cadastro de animal por uma conta do tipo doador/ONG: sem fotos, com seis fotos e com uma foto acima de 5 MB o formulário deve impedir a publicação; com uma a cinco fotos válidas deve comprimir, enviar e publicar. Confirme que adotante e usuário anônimo não conseguem gravar anúncios nem enviar fotos.
-5. Verifique erro de rede, lista vazia e validação de formulário. Confira Web e Android para qualquer mudança de interface.
-6. Antes de alterar policies ou esquema, leia as migrations e planeje uma migration nova. Nunca edite/aplique novamente uma migration já executada na produção sem uma estratégia explícita.
+5. Teste filtros individualmente e combinados para espécie, porte, cidade parcial (por exemplo, `Camp` encontra `Campinas`) e UF; confira também limpar filtros, lista sem resultados, anúncios antigos sem localização e diferenças de maiúsculas/minúsculas no nome da cidade.
+6. Na área de gerenciamento, confirme que o doador vê apenas seus anúncios, consegue alterar campos e fotos, marcar um anúncio como adotado (ele sai da lista pública) e reabri-lo. Confira também que outra conta não consegue editar nem trocar status desse anúncio.
+7. Verifique erro de rede, lista vazia e validação de formulário. Confira Web e Android para qualquer mudança de interface.
+8. Antes de alterar policies ou esquema, leia as migrations e planeje uma migration nova. Nunca edite/aplique novamente uma migration já executada na produção sem uma estratégia explícita.
 
 Ao fazer uma mudança, siga o fluxo completo: atualizar requisito se o comportamento mudou, ajustar tipo/schema, implementar o caso de uso e o repositório, ligar à tela, validar com `typecheck` e executar os passos manuais afetados.
 
 ## 7. Limites conhecidos da implementação
 
-O código atual já tem lista, detalhe, cadastro com cidade/UF e fotos, autenticação, perfil e conexão inicial com Supabase. Isso não significa que o MVP esteja completo. Ainda precisam ser implementados, conforme o [escopo do MVP](../Produto/escopo-mvp.md), filtros, gestão dos próprios anúncios, contato via WhatsApp com proteção de telefone, e validação abrangente de RLS e dos fluxos Web/Android.
+O código atual já tem lista com filtros, detalhe, cadastro/edição de anúncios com cidade/UF e fotos, área de gestão de anúncios, autenticação, perfil e conexão inicial com Supabase. A área do doador permite listar os próprios anúncios, editar dados/fotos, marcar como adotado e reabrir. Isso não significa que o MVP esteja completo. Ainda precisam ser implementados, conforme o [escopo do MVP](../Produto/escopo-mvp.md), contato via WhatsApp com proteção de telefone, e validação abrangente de RLS e dos fluxos Web/Android.

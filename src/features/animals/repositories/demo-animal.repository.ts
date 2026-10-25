@@ -1,4 +1,4 @@
-import type { Animal, AnimalRepository, NewAnimal } from "@/features/animals/types";
+import type { Animal, AnimalFilters, AnimalRepository, NewAnimal } from "@/features/animals/types";
 
 const demoAnimals: Animal[] = [
   {
@@ -10,6 +10,7 @@ const demoAnimals: Animal[] = [
     city: "São Paulo",
     state: "SP",
     photos: [],
+    photoPaths: [],
     ageMonths: 24,
     size: "medio",
     healthStatus: "saudavel",
@@ -26,6 +27,7 @@ const demoAnimals: Animal[] = [
     city: "Campinas",
     state: "SP",
     photos: [],
+    photoPaths: [],
     ageMonths: 12,
     size: "pequeno",
     healthStatus: "saudavel",
@@ -42,6 +44,7 @@ const demoAnimals: Animal[] = [
     city: "Santos",
     state: "SP",
     photos: [],
+    photoPaths: [],
     ageMonths: 6,
     size: "pequeno",
     healthStatus: "nao_informado",
@@ -54,12 +57,25 @@ const demoAnimals: Animal[] = [
 export class DemoAnimalRepository implements AnimalRepository {
   private readonly animals = [...demoAnimals];
 
-  async listAvailable(): Promise<Animal[]> {
-    return this.animals.filter((animal) => animal.status === "available");
+  async listAvailable(filters: AnimalFilters = {}): Promise<Animal[]> {
+    const city = filters.city?.trim().toLocaleLowerCase("pt-BR");
+    const state = filters.state?.trim().toUpperCase();
+
+    return this.animals.filter((animal) =>
+      animal.status === "available"
+      && (!filters.species || animal.species === filters.species)
+      && (!filters.size || animal.size === filters.size)
+      && (!city || animal.city?.toLocaleLowerCase("pt-BR").includes(city))
+      && (!state || animal.state === state),
+    );
   }
 
   async getById(id: string): Promise<Animal | null> {
     return this.animals.find((animal) => animal.id === id) ?? null;
+  }
+
+  async listMine(): Promise<Animal[]> {
+    return this.animals.filter((animal) => animal.ownerId === "demo-doador");
   }
 
   async create(input: NewAnimal): Promise<Animal> {
@@ -70,8 +86,31 @@ export class DemoAnimalRepository implements AnimalRepository {
       status: "available",
       createdAt: new Date().toISOString(),
       photos: input.photos.map((photo) => photo.uri),
+      photoPaths: input.photos.map((photo) => photo.uri),
     };
     this.animals.unshift(animal);
+    return animal;
+  }
+
+  async update(id: string, input: NewAnimal, retainedPhotoPaths: string[]): Promise<Animal> {
+    const index = this.animals.findIndex((animal) => animal.id === id);
+    if (index === -1) throw new Error("Anúncio não encontrado.");
+
+    const current = this.animals[index];
+    const updated: Animal = {
+      ...current,
+      ...input,
+      photos: [...retainedPhotoPaths, ...input.photos.map((photo) => photo.uri)],
+      photoPaths: [...retainedPhotoPaths, ...input.photos.map((photo) => photo.uri)],
+    };
+    this.animals[index] = updated;
+    return updated;
+  }
+
+  async setStatus(id: string, status: Animal["status"]): Promise<Animal> {
+    const animal = this.animals.find((item) => item.id === id);
+    if (!animal) throw new Error("Anúncio não encontrado.");
+    animal.status = status;
     return animal;
   }
 }

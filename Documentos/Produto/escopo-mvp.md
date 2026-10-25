@@ -98,7 +98,7 @@ Estas decisões não mudam o escopo funcional, mas precisam ser registradas dura
 
 - **Pré-projeto:** [pre-projeto-mvp.docx](pre-projeto-mvp.docx) e [pre-projeto-mvp.md](pre-projeto-mvp.md) refletem as plataformas, autenticação, filtros, fotos, contato e segurança acordados.
 - **Protótipo:** [fluxo-mvp.svg](../Design/fluxo-mvp.svg) apresenta o fluxo acordado e substitui chat/interesses por autenticação, localização e gestão de anúncios. O desenho anterior permanece em [Arquivo/](../Arquivo/).
-- **Código/README:** a base já contém versões iniciais de lista, detalhes, cadastro com cidade/UF e fotos, autenticação/perfil e integração com Supabase. Os filtros, gestão completa de anúncios e contato seguro ainda não estão concluídos. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
+- **Código/README:** a base já contém versões iniciais de lista com filtros por espécie, porte, cidade e estado, detalhes, cadastro/edição e gerenciamento de estado dos próprios anúncios, fotos, autenticação/perfil e integração com Supabase. O contato seguro por WhatsApp ainda não está concluído. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
 
 ## Regra para mudanças de escopo
 

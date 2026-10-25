@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { MAX_PHOTO_SIZE_BYTES } from "@/features/animals/photo.constants";
 import { prepareAnimalPhoto } from "@/features/animals/photo.service";
-import type { Animal, AnimalRepository, NewAnimal } from "@/features/animals/types";
+import type { Animal, AnimalFilters, AnimalRepository, NewAnimal } from "@/features/animals/types";
 
 type AnimalRow = Database["public"]["Tables"]["animals"]["Row"];
 const animalPhotoBucket = "animal-photos";
@@ -10,11 +10,33 @@ const animalPhotoBucket = "animal-photos";
 export class SupabaseAnimalRepository implements AnimalRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 
-  async listAvailable(): Promise<Animal[]> {
-    const { data, error } = await this.client
+  async listAvailable(filters: AnimalFilters = {}): Promise<Animal[]> {
+    let query = this.client
       .from("animals")
       .select("*")
       .eq("status", "available")
+      .order("created_at", { ascending: false });
+
+    if (filters.species) query = query.eq("species", filters.species);
+    if (filters.size) query = query.eq("size", filters.size);
+    if (filters.city?.trim()) query = query.ilike("city", `%${filters.city.trim()}%`);
+    if (filters.state?.trim()) query = query.eq("state", filters.state.trim().toUpperCase());
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+    return data.map((row) => mapAnimal(row, (path) => this.getPhotoUrl(path)));
+  }
+
+  async listMine(): Promise<Animal[]> {
+    const { data: userData, error: authError } = await this.client.auth.getUser();
+    if (authError) throw authError;
+    if (!userData.user) throw new Error("Entre na sua conta para ver seus anúncios.");
+
+    const { data, error } = await this.client
+      .from("animals")
+      .select("*")
+      .eq("owner_id", userData.user.id)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -91,6 +113,107 @@ export class SupabaseAnimalRepository implements AnimalRepository {
     }
   }
 
+  async update(id: string, input: NewAnimal, retainedPhotoPaths: string[]): Promise<Animal> {
+    const { data: userData, error: authError } = await this.client.auth.getUser();
+    if (authError) throw authError;
+    if (!userData.user) throw new Error("Entre na sua conta para editar anúncios.");
+
+    const { data: current, error: currentError } = await this.client
+      .from("animals")
+      .select("*")
+      .eq("id", id)
+      .eq("owner_id", userData.user.id)
+      .single();
+    if (currentError) throw currentError;
+
+    const currentPhotoPaths = current.photo_paths;
+    if (retainedPhotoPaths.some((path) => !currentPhotoPaths.includes(path))) {
+      throw new Error("A lista de fotos contém arquivos que não pertencem a este anúncio.");
+    }
+
+    const storage = this.client.storage.from(animalPhotoBucket);
+    const uploadedPaths: string[] = [];
+    const uploadBatchId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    let updateCommitted = false;
+
+    try {
+      const newPhotoPaths: string[] = [];
+      for (const [index, photo] of input.photos.entries()) {
+        if (photo.fileSize > MAX_PHOTO_SIZE_BYTES) {
+          throw new Error("Cada foto deve ter no máximo 5 MB antes da compressão.");
+        }
+
+        const body = await prepareAnimalPhoto(photo.uri, photo.width, photo.height);
+        const path = `${userData.user.id}/${uploadBatchId}/${index + 1}.jpg`;
+        const { error: uploadError } = await storage.upload(path, body, {
+          contentType: "image/jpeg",
+          upsert: false,
+        });
+        if (uploadError) throw uploadError;
+        uploadedPaths.push(path);
+        newPhotoPaths.push(path);
+      }
+
+      const nextPhotoPaths = [...retainedPhotoPaths, ...newPhotoPaths];
+      const { data, error } = await this.client
+        .from("animals")
+        .update({
+          name: input.name,
+          species: input.species,
+          breed: input.breed || null,
+          city: input.city,
+          state: input.state,
+          photo_paths: nextPhotoPaths,
+          age_months: input.ageMonths,
+          size: input.size,
+          health_status: input.healthStatus,
+          description: input.description,
+        })
+        .eq("id", id)
+        .eq("owner_id", userData.user.id)
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      updateCommitted = true;
+
+      const removedPhotoPaths = currentPhotoPaths.filter((path) => !retainedPhotoPaths.includes(path));
+      if (removedPhotoPaths.length) {
+        const { error: cleanupError } = await storage.remove(removedPhotoPaths);
+        if (cleanupError) {
+          throw new Error(`Anúncio atualizado, mas não foi possível remover fotos substituídas: ${cleanupError.message}`);
+        }
+      }
+
+      return mapAnimal(data, (path) => this.getPhotoUrl(path));
+    } catch (error) {
+      const { error: cleanupError } = !updateCommitted && uploadedPaths.length
+        ? await storage.remove(uploadedPaths)
+        : { error: null };
+      if (cleanupError) {
+        const message = error instanceof Error ? error.message : "Falha ao atualizar o anúncio.";
+        throw new Error(`${message} Também não foi possível limpar as novas fotos enviadas: ${cleanupError.message}`);
+      }
+      throw error;
+    }
+  }
+
+  async setStatus(id: string, status: Animal["status"]): Promise<Animal> {
+    const { data: userData, error: authError } = await this.client.auth.getUser();
+    if (authError) throw authError;
+    if (!userData.user) throw new Error("Entre na sua conta para gerenciar anúncios.");
+
+    const { data, error } = await this.client
+      .from("animals")
+      .update({ status })
+      .eq("id", id)
+      .eq("owner_id", userData.user.id)
+      .select("*")
+      .single();
+    if (error) throw error;
+    return mapAnimal(data, (path) => this.getPhotoUrl(path));
+  }
+
   private getPhotoUrl(path: string): string {
     return this.client.storage.from(animalPhotoBucket).getPublicUrl(path).data.publicUrl;
   }
@@ -106,6 +229,7 @@ function mapAnimal(row: AnimalRow, getPhotoUrl: (path: string) => string): Anima
     city: row.city,
     state: row.state,
     photos: row.photo_paths.map(getPhotoUrl),
+    photoPaths: row.photo_paths,
     ageMonths: row.age_months,
     size: row.size,
     healthStatus: row.health_status,

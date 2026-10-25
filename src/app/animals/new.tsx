@@ -1,14 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, router, Stack } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm, type Control } from "react-hook-form";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import type { ReactNode } from "react";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { StateMessage } from "@/components/StateMessage";
 import { newAnimalSchema, type NewAnimalInput } from "@/features/animals/schemas/animal.schema";
-import { useCreateAnimal } from "@/features/animals/hooks/useAnimals";
+import { useAnimal, useCreateAnimal, useUpdateAnimal } from "@/features/animals/hooks/useAnimals";
 import { MAX_ANIMAL_PHOTOS, MAX_PHOTO_SIZE_BYTES } from "@/features/animals/photo.constants";
 import type { AnimalHealth, AnimalPhotoInput, AnimalSize, AnimalSpecies } from "@/features/animals/types";
 import { useAuth } from "@/features/auth/AuthProvider";
@@ -31,10 +31,16 @@ const healthOptions: { value: AnimalHealth; label: string }[] = [
 
 export default function NewAnimalScreen() {
   const auth = useAuth();
+  const { animalId } = useLocalSearchParams<{ animalId?: string }>();
+  const isEditing = Boolean(animalId);
+  const existingAnimalQuery = useAnimal(animalId ?? "");
   const createAnimal = useCreateAnimal();
+  const updateAnimal = useUpdateAnimal();
+  const isSaving = createAnimal.isPending || updateAnimal.isPending;
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { control, handleSubmit, formState: { errors }, setValue, watch } = useForm<NewAnimalInput>({
+  const loadedAnimalId = useRef<string | null>(null);
+  const { control, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<NewAnimalInput>({
     resolver: zodResolver(newAnimalSchema),
     defaultValues: {
       name: "",
@@ -43,6 +49,7 @@ export default function NewAnimalScreen() {
       city: "",
       state: "",
       photos: [],
+      existingPhotoPaths: [],
       ageMonths: 0,
       size: "medio",
       healthStatus: "nao_informado",
@@ -50,6 +57,25 @@ export default function NewAnimalScreen() {
     },
   });
   const requiresDonorProfile = auth.available;
+
+  useEffect(() => {
+    const animal = existingAnimalQuery.data;
+    if (!animal || loadedAnimalId.current === animal.id) return;
+    loadedAnimalId.current = animal.id;
+    reset({
+      name: animal.name,
+      species: animal.species,
+      breed: animal.breed ?? "",
+      city: animal.city ?? "",
+      state: animal.state ?? "",
+      photos: [],
+      existingPhotoPaths: animal.photoPaths,
+      ageMonths: animal.ageMonths,
+      size: animal.size,
+      healthStatus: animal.healthStatus,
+      description: animal.description,
+    });
+  }, [existingAnimalQuery.data, reset]);
 
   useEffect(() => {
     if (auth.loading || auth.profileLoading || !auth.available || auth.session) return;
@@ -73,11 +99,25 @@ export default function NewAnimalScreen() {
       </View>
     );
   }
+  if (isEditing && existingAnimalQuery.isPending) {
+    return <StateMessage message="Carregando anúncio para edição..." loading />;
+  }
+  if (isEditing && (existingAnimalQuery.error || !existingAnimalQuery.data)) {
+    return <View style={styles.accessMessage}>
+      <StateMessage message={`Não foi possível carregar o anúncio: ${existingAnimalQuery.error?.message ?? "anúncio não encontrado"}`} />
+      <Link href="/animals/manage" asChild>
+        <PrimaryButton title="Voltar aos meus anúncios" variant="secondary" />
+      </Link>
+    </View>;
+  }
 
   const onSubmit = handleSubmit(async (input) => {
     setSubmitError(null);
     try {
-      const animal = await createAnimal.mutateAsync(input);
+      const { existingPhotoPaths, ...animalInput } = input;
+      const animal = isEditing && animalId
+        ? await updateAnimal.mutateAsync({ id: animalId, animal: animalInput, retainedPhotoPaths: existingPhotoPaths })
+        : await createAnimal.mutateAsync(animalInput);
       router.replace({ pathname: "/animals/[id]", params: { id: animal.id } });
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Não foi possível cadastrar o animal.");
@@ -85,10 +125,12 @@ export default function NewAnimalScreen() {
   });
 
   const selectedPhotos = watch("photos");
+  const existingPhotoPaths = watch("existingPhotoPaths");
+  const photoCount = selectedPhotos.length + existingPhotoPaths.length;
 
   async function selectPhotos() {
     setPhotoError(null);
-    const remainingSlots = MAX_ANIMAL_PHOTOS - selectedPhotos.length;
+    const remainingSlots = MAX_ANIMAL_PHOTOS - photoCount;
     if (remainingSlots <= 0) {
       setPhotoError(`Você pode adicionar no máximo ${MAX_ANIMAL_PHOTOS} fotos.`);
       return;
@@ -110,7 +152,7 @@ export default function NewAnimalScreen() {
         height: asset.height,
       })));
 
-      if (selectedPhotos.length + addedPhotos.length > MAX_ANIMAL_PHOTOS) {
+      if (photoCount + addedPhotos.length > MAX_ANIMAL_PHOTOS) {
         setPhotoError(`Um anúncio pode ter no máximo ${MAX_ANIMAL_PHOTOS} fotos.`);
         return;
       }
@@ -126,15 +168,19 @@ export default function NewAnimalScreen() {
   }
 
   function removePhoto(index: number) {
-    const nextPhotos = selectedPhotos.filter((_, photoIndex) => photoIndex !== index);
-    setValue("photos", nextPhotos, { shouldDirty: true, shouldValidate: true });
+    if (index < existingPhotoPaths.length) {
+      setValue("existingPhotoPaths", existingPhotoPaths.filter((_, photoIndex) => photoIndex !== index), { shouldDirty: true, shouldValidate: true });
+      return;
+    }
+    const newPhotoIndex = index - existingPhotoPaths.length;
+    setValue("photos", selectedPhotos.filter((_, photoIndex) => photoIndex !== newPhotoIndex), { shouldDirty: true, shouldValidate: true });
   }
 
   return (
     <>
-      <Stack.Screen options={{ title: "Cadastrar animal" }} />
+      <Stack.Screen options={{ title: isEditing ? "Editar anúncio" : "Cadastrar animal" }} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.intro}>Preencha as informações para encontrar um novo lar.</Text>
+        <Text style={styles.intro}>{isEditing ? "Atualize as informações do anúncio." : "Preencha as informações para encontrar um novo lar."}</Text>
         <Field label="Nome do animal" error={errors.name?.message}>
           <Controller
             control={control}
@@ -197,11 +243,17 @@ export default function NewAnimalScreen() {
           <ChoiceField control={control} name="healthStatus" options={healthOptions} />
         </Field>
 
-        <Field label={`Fotos (${selectedPhotos.length}/${MAX_ANIMAL_PHOTOS})`} error={errors.photos?.message}>
+        <Field label={`Fotos (${photoCount}/${MAX_ANIMAL_PHOTOS})`} error={errors.photos?.message}>
           <Text style={styles.photoHint}>Adicione pelo menos uma foto. Cada arquivo pode ter até 5 MB antes da compressão.</Text>
           <View style={styles.photoList}>
-            {selectedPhotos.map((photo, index) => (
-              <View key={`${photo.uri}-${index}`} style={styles.photoItem}>
+            {[...existingPhotoPaths.map((path) => ({
+              key: `existing-${path}`,
+              uri: existingAnimalQuery.data?.photos[existingAnimalQuery.data.photoPaths.indexOf(path)] ?? "",
+            })), ...selectedPhotos.map((photo, index) => ({
+              key: `new-${photo.uri}-${index}`,
+              uri: photo.uri,
+            }))].map((photo, index) => (
+              <View key={photo.key} style={styles.photoItem}>
                 <Image source={{ uri: photo.uri }} style={styles.photoPreview} />
                 <Pressable
                   accessibilityRole="button"
@@ -215,10 +267,10 @@ export default function NewAnimalScreen() {
             ))}
           </View>
           <PrimaryButton
-            title={selectedPhotos.length ? "＋  Adicionar fotos" : "＋  Selecionar fotos"}
+            title={photoCount ? "＋  Adicionar fotos" : "＋  Selecionar fotos"}
             variant="secondary"
             onPress={() => void selectPhotos()}
-            disabled={selectedPhotos.length >= MAX_ANIMAL_PHOTOS || createAnimal.isPending}
+            disabled={photoCount >= MAX_ANIMAL_PHOTOS || isSaving}
           />
           {photoError ? <Text accessibilityRole="alert" style={styles.error}>{photoError}</Text> : null}
         </Field>
@@ -234,7 +286,7 @@ export default function NewAnimalScreen() {
         </Field>
 
         {submitError ? <Text accessibilityRole="alert" style={styles.submitError}>{submitError}</Text> : null}
-        <PrimaryButton title={createAnimal.isPending ? "Cadastrando..." : "Cadastrar"} onPress={() => void onSubmit()} disabled={createAnimal.isPending} />
+        <PrimaryButton title={isSaving ? (isEditing ? "Salvando..." : "Cadastrando...") : (isEditing ? "Salvar alterações" : "Cadastrar")} onPress={() => void onSubmit()} disabled={isSaving} />
       </ScrollView>
     </>
   );
