@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { HeaderHomeButton } from "@/components/HeaderHomeButton";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 
 export default function RootLayout() {
@@ -26,12 +27,17 @@ export default function RootLayout() {
             headerStyle: { backgroundColor: "#fffaf4" },
             headerTintColor: "#593a8a",
             headerTitleStyle: { fontWeight: "700" },
+            headerRight: () => <HeaderHomeButton />,
             contentStyle: { backgroundColor: "#fffaf4" },
           }}
         >
-          <Stack.Screen name="index" options={{ title: "PetConnect" }} />
+          <Stack.Screen
+            name="index"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="animals/index" options={{ title: "Animais para adoção" }} />
           <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal" }} />
+          <Stack.Screen name="animals/manage" options={{ title: "Meus anúncios" }} />
           <Stack.Screen name="animals/[id]" options={{ title: "Detalhes do animal" }} />
           <Stack.Screen name="account" options={{ title: "Minha conta" }} />
           <Stack.Screen name="auth/login" options={{ title: "Entrar" }} />

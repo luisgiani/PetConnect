@@ -156,6 +156,8 @@ Validações críticas existem **também no banco** (constraints, tipos enumerad
 
 O campo `especie` foi acrescentado em relação ao protótipo, pois é necessário para os filtros de busca.
 
+A lista atual aplica filtros por espécie e porte exatos, cidade por correspondência parcial sem diferenciar maiúsculas/minúsculas e estado pela UF exata. A mesma interface é usada nos repositórios demo e Supabase.
+
 ---
 
 ## 7. Escopo e Comunicação entre as Partes

@@ -22,7 +22,6 @@ export const newAnimalSchema = z.object({
     width: z.number().nonnegative(),
     height: z.number().nonnegative(),
   }))
-    .min(1, "Adicione pelo menos uma foto do animal.")
     .max(MAX_ANIMAL_PHOTOS, `Adicione no máximo ${MAX_ANIMAL_PHOTOS} fotos.`)
     .superRefine((photos, context) => {
       photos.forEach((photo, index) => {
@@ -35,10 +34,27 @@ export const newAnimalSchema = z.object({
         }
       });
     }),
+  existingPhotoPaths: z.array(z.string().min(1)),
   ageMonths: z.number().int("Informe a idade em meses inteiros.").min(0, "A idade não pode ser negativa.").max(600, "Informe uma idade válida."),
   size: z.enum(["pequeno", "medio", "grande"]),
   healthStatus: z.enum(["saudavel", "em_tratamento", "nao_informado"]),
   description: z.string().trim().min(10, "Descreva o animal com pelo menos 10 caracteres.").max(1000, "Use até 1000 caracteres."),
+}).superRefine((input, context) => {
+  const totalPhotos = input.photos.length + input.existingPhotoPaths.length;
+  if (totalPhotos < 1) {
+    context.addIssue({
+      code: "custom",
+      path: ["photos"],
+      message: "Adicione pelo menos uma foto do animal.",
+    });
+  }
+  if (totalPhotos > MAX_ANIMAL_PHOTOS) {
+    context.addIssue({
+      code: "custom",
+      path: ["photos"],
+      message: `Adicione no máximo ${MAX_ANIMAL_PHOTOS} fotos.`,
+    });
+  }
 });
 
 export type NewAnimalInput = z.infer<typeof newAnimalSchema>;

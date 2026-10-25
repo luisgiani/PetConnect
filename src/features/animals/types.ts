@@ -10,6 +10,13 @@ export type AnimalPhotoInput = {
   height: number;
 };
 
+export type AnimalFilters = {
+  species?: AnimalSpecies;
+  size?: AnimalSize;
+  city?: string;
+  state?: string;
+};
+
 export type Animal = {
   id: string;
   ownerId: string;
@@ -19,6 +26,7 @@ export type Animal = {
   city: string | null;
   state: string | null;
   photos: string[];
+  photoPaths: string[];
   ageMonths: number;
   size: AnimalSize;
   healthStatus: AnimalHealth;
@@ -27,14 +35,17 @@ export type Animal = {
   createdAt: string;
 };
 
-export type NewAnimal = Omit<Animal, "id" | "ownerId" | "status" | "createdAt" | "city" | "state" | "photos"> & {
+export type NewAnimal = Omit<Animal, "id" | "ownerId" | "status" | "createdAt" | "city" | "state" | "photos" | "photoPaths"> & {
   city: string;
   state: string;
   photos: AnimalPhotoInput[];
 };
 
 export type AnimalRepository = {
-  listAvailable(): Promise<Animal[]>;
+  listAvailable(filters?: AnimalFilters): Promise<Animal[]>;
+  listMine(): Promise<Animal[]>;
   getById(id: string): Promise<Animal | null>;
   create(animal: NewAnimal): Promise<Animal>;
+  update(id: string, animal: NewAnimal, retainedPhotoPaths: string[]): Promise<Animal>;
+  setStatus(id: string, status: AnimalStatus): Promise<Animal>;
 };

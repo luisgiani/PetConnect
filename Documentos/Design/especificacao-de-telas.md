@@ -50,6 +50,7 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - Listar somente anúncios pertencentes à conta autenticada.
 - Mostrar o estado de cada anúncio.
 - Permitir cadastrar, editar e encerrar/marcar como adotado os próprios anúncios.
+- Permitir reabrir um anúncio marcado como adotado.
 - Não oferecer administração de registros de outras contas.
 
 ### 7. Cadastro e edição de animal

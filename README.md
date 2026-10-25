@@ -79,7 +79,5 @@ O adaptador Supabase já lista, consulta, cadastra animais e envia fotos. As tel
 
 ## Próximos passos sugeridos
 
-1. Aplicar as migrations pendentes de localização e fotos no Supabase configurado, em ordem e sem reset; depois testar criação com conta doadora.
-2. Implementar filtros por espécie, porte, cidade e estado e validar o fluxo em Android/Web.
-3. Adicionar gestão dos anúncios do responsável e contato autenticado por WhatsApp com telefone protegido.
-4. Criar testes dos serviços, validações, Storage e políticas RLS; avaliar chat/favoritos somente após o MVP.
+1. Implementar contato por WhatsApp para usuários autenticados sem expor telefones na navegação pública.
+2. Criar testes automatizados dos serviços, filtros, validações, Storage e políticas RLS; validar os fluxos em Android/Web.
