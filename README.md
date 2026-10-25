@@ -79,5 +79,5 @@ O adaptador Supabase já lista, consulta, cadastra animais e envia fotos. As tel
 
 ## Próximos passos sugeridos
 
-1. Implementar contato por WhatsApp para usuários autenticados sem expor telefones na navegação pública.
+1. Aplicar e testar a migration de contato controlado com sessão anônima e autenticada.
 2. Criar testes automatizados dos serviços, filtros, validações, Storage e políticas RLS; validar os fluxos em Android/Web.

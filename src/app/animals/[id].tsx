@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { DonorContact } from "@/components/DonorContact";
 import { StateMessage } from "@/components/StateMessage";
 import { useAnimal } from "@/features/animals/hooks/useAnimals";
 
@@ -87,7 +88,12 @@ export default function AnimalDetailsScreen() {
           <Text style={styles.sectionTitle}>Sobre {animal.name}</Text>
           <Text style={styles.description}>{animal.description}</Text>
         </View>
-        <Text style={styles.contactNote}>O contato com o responsável pelo WhatsApp será disponibilizado em uma próxima atualização.</Text>
+        <DonorContact
+          donorName={animal.donorName}
+          donorPhone={animal.donorPhone}
+          contactError={animal.contactError}
+          returnTo={`/animals/${animal.id}`}
+        />
       </ScrollView>
     </>
   );
@@ -154,5 +160,4 @@ const styles = StyleSheet.create({
   descriptionCard: { backgroundColor: "#fff", borderColor: "#eee3d4", borderRadius: 14, borderWidth: 1, gap: 10, padding: 16 },
   sectionTitle: { color: "#30283a", fontSize: 19, fontWeight: "700" },
   description: { color: "#62596a", fontSize: 16, lineHeight: 25 },
-  contactNote: { backgroundColor: "#f0e8ff", borderRadius: 12, color: "#593a8a", lineHeight: 21, padding: 14 },
 });

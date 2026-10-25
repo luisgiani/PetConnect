@@ -6,19 +6,21 @@ type AnimalCardProps = { animal: Animal };
 
 export function AnimalCard({ animal }: AnimalCardProps) {
   return (
-    <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
-      <Pressable accessibilityRole="link" style={styles.card}>
-        {animal.photos[0]
-          ? <Image source={{ uri: animal.photos[0] }} style={styles.avatar} />
-          : <View style={styles.avatar}><Text style={styles.emoji}>{animal.species === "gato" ? "🐱" : "🐶"}</Text></View>}
-        <View style={styles.details}>
-          <Text style={styles.name}>{animal.name}</Text>
-          <Text style={styles.subtitle}>{formatAge(animal.ageMonths)} · {animal.breed || labelSpecies(animal.species)}</Text>
-          <Text style={styles.subtitle}>Porte {animal.size} · {formatLocation(animal.city, animal.state)}</Text>
-        </View>
-        <Text style={styles.arrow}>›</Text>
-      </Pressable>
-    </Link>
+    <View style={styles.card}>
+      <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
+        <Pressable accessibilityRole="link" style={styles.animalLink}>
+          {animal.photos[0]
+            ? <Image source={{ uri: animal.photos[0] }} style={styles.avatar} />
+            : <View style={styles.avatar}><Text style={styles.emoji}>{animal.species === "gato" ? "🐱" : "🐶"}</Text></View>}
+          <View style={styles.details}>
+            <Text style={styles.name}>{animal.name}</Text>
+            <Text style={styles.subtitle}>{formatAge(animal.ageMonths)} · {animal.breed || labelSpecies(animal.species)}</Text>
+            <Text style={styles.subtitle}>Porte {animal.size} · {formatLocation(animal.city, animal.state)}</Text>
+          </View>
+          <Text style={styles.arrow}>›</Text>
+        </Pressable>
+      </Link>
+    </View>
   );
 }
 
@@ -40,14 +42,17 @@ function formatLocation(city: string | null, state: string | null): string {
 
 const styles = StyleSheet.create({
   card: {
-    alignItems: "center",
     backgroundColor: "#ffffff",
     borderColor: "#eee3d4",
     borderRadius: 16,
     borderWidth: 1,
+    gap: 12,
+    padding: 12,
+  },
+  animalLink: {
+    alignItems: "center",
     flexDirection: "row",
     gap: 14,
-    padding: 14,
   },
   avatar: {
     backgroundColor: "#fff0dc",

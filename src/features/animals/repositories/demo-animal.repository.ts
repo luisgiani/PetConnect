@@ -4,6 +4,8 @@ const demoAnimals: Animal[] = [
   {
     id: "demo-mel",
     ownerId: "demo-doador",
+    donorName: "Doador de demonstração",
+    donorPhone: null,
     name: "Mel",
     species: "cachorro",
     breed: "SRD",
@@ -21,6 +23,8 @@ const demoAnimals: Animal[] = [
   {
     id: "demo-thor",
     ownerId: "demo-doador",
+    donorName: "Doador de demonstração",
+    donorPhone: null,
     name: "Thor",
     species: "gato",
     breed: "Sem raça definida",
@@ -38,6 +42,8 @@ const demoAnimals: Animal[] = [
   {
     id: "demo-luna",
     ownerId: "demo-doador",
+    donorName: "Doador de demonstração",
+    donorPhone: null,
     name: "Luna",
     species: "cachorro",
     breed: "SRD",
@@ -83,6 +89,8 @@ export class DemoAnimalRepository implements AnimalRepository {
       ...input,
       id: `demo-${Date.now()}`,
       ownerId: "demo-doador",
+      donorName: "Doador de demonstração",
+      donorPhone: null,
       status: "available",
       createdAt: new Date().toISOString(),
       photos: input.photos.map((photo) => photo.uri),

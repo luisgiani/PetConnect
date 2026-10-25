@@ -20,6 +20,9 @@ export type AnimalFilters = {
 export type Animal = {
   id: string;
   ownerId: string;
+  donorName: string | null;
+  donorPhone: string | null;
+  contactError?: string | null;
   name: string;
   species: AnimalSpecies;
   breed: string | null;
@@ -35,7 +38,10 @@ export type Animal = {
   createdAt: string;
 };
 
-export type NewAnimal = Omit<Animal, "id" | "ownerId" | "status" | "createdAt" | "city" | "state" | "photos" | "photoPaths"> & {
+export type NewAnimal = Omit<
+  Animal,
+  "id" | "ownerId" | "donorName" | "donorPhone" | "status" | "createdAt" | "city" | "state" | "photos" | "photoPaths"
+> & {
   city: string;
   state: string;
   photos: AnimalPhotoInput[];

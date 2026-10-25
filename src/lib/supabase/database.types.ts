@@ -74,7 +74,16 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      get_animal_contacts: {
+        Args: { p_animal_ids: string[] };
+        Returns: {
+          animal_id: string;
+          donor_name: string;
+          donor_phone: string | null;
+        }[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

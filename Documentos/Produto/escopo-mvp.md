@@ -8,7 +8,7 @@ Entregar uma aplicação que permita encontrar animais disponíveis para adoçã
 
 ## Público e plataformas
 
-- **Adotante:** pode navegar publicamente; precisa criar conta para iniciar contato pelo WhatsApp.
+- **Adotante:** pode navegar publicamente; precisa criar conta para ver o contato do responsável.
 - **Doador/ONG:** cria conta e perfil para publicar, editar e encerrar anúncios.
 - **Plataformas do MVP:** Android e Web (computador).
 - **Fora das plataformas do MVP:** publicação ou certificação para iOS.
@@ -22,8 +22,8 @@ Entregar uma aplicação que permita encontrar animais disponíveis para adoçã
 | Contas | Cadastro, login, confirmação de e-mail obrigatória, sessão persistente e perfil do tipo adotante ou doador/ONG. As contas de demonstração devem estar confirmadas antes da apresentação. |
 | Publicação | Doador/ONG autenticado pode cadastrar e editar anúncios e marcá-los como adotados/encerrados. |
 | Fotos | Exigir ao menos uma foto e permitir no máximo cinco por anúncio; limite de 5 MB por arquivo antes da compressão; armazenar no Supabase Storage. |
-| Contato | Usuário autenticado pode abrir o WhatsApp do responsável a partir do detalhe do animal. |
-| Segurança | RLS no banco: somente o responsável pode administrar seus anúncios; dados de contato não devem ser expostos na navegação pública. |
+| Contato | Usuário autenticado pode ver o nome e telefone do responsável somente nos detalhes de anúncios disponíveis; o telefone abre o aplicativo de chamadas. |
+| Segurança | RLS no banco: somente o responsável pode administrar seus anúncios; nome e telefone não são expostos a visitantes anônimos nem por consultas públicas de perfil. |
 
 Os filtros são aplicados à lista de animais disponíveis. Cidade e estado passam a fazer parte dos dados do anúncio e devem ser validados e persistidos.
 
@@ -31,12 +31,12 @@ Os filtros são aplicados à lista de animais disponíveis. Cidade e estado pass
 
 1. **Início:** apresentar o produto e oferecer ações para buscar animais, entrar ou criar conta.
 2. **Lista de animais:** mostrar anúncios disponíveis e filtros por espécie, porte, cidade e estado.
-3. **Detalhes do animal:** exibir informações, fotos e ação de contato; pedir login ao tentar contatar sem sessão.
+3. **Detalhes do animal:** exibir informações e fotos; exibir contato do responsável somente após autenticação.
 4. **Entrar / criar conta:** autenticar adotantes e doadores/ONGs; o cadastro exige confirmação de e-mail.
 5. **Completar perfil:** coletar nome, tipo de perfil e, para doador/ONG, telefone para contato.
 6. **Área do doador/ONG:** listar anúncios próprios e oferecer publicação, edição e encerramento.
 7. **Cadastrar / editar animal:** coletar dados do anúncio e até cinco fotos; exigir pelo menos uma foto para publicar.
-8. **Contato:** abrir o WhatsApp do responsável somente para usuário autenticado, sem disponibilizar telefones na navegação pública.
+8. **Contato:** disponibilizar nome e telefone do responsável somente na tela de detalhes, para usuário autenticado e quando o anúncio estiver disponível.
 
 Em telas pequenas, a navegação pode usar abas ou menu equivalente, mas não deve incluir atalhos de chat interno ou lista de interesses no MVP. Na Web, as mesmas ações devem funcionar em layout responsivo para computador.
 
@@ -58,7 +58,7 @@ Esses itens só entram em uma etapa posterior se houver decisão explícita de a
 2. Pesquisa por espécie, porte e localização.
 3. Abre os detalhes do animal.
 4. Se ainda não estiver autenticado, entra ou cria uma conta do tipo adotante.
-5. Usa a ação de contato para abrir o WhatsApp do responsável.
+5. Consulta o nome e o telefone do responsável; pode selecionar o telefone para iniciar uma chamada.
 
 Não há funcionalidade de salvar animais ou consultar uma lista de interesses no MVP.
 
@@ -76,7 +76,7 @@ O MVP só será considerado concluído quando:
 
 1. Uma pessoa sem conta conseguir listar animais disponíveis, filtrar e abrir detalhes na Web e no Android.
 2. Cadastro, login, encerramento de sessão e restauração da sessão funcionarem nas plataformas incluídas.
-3. Uma conta adotante autenticada conseguir iniciar o contato por WhatsApp, sem que o telefone fique exposto na lista pública ou nos detalhes para visitantes anônimos.
+3. Uma pessoa anônima conseguir navegar sem ver dados de contato; uma conta autenticada conseguir ver nome e telefone nos anúncios disponíveis e iniciar uma chamada pelo telefone, sem leitura pública da tabela de perfis.
 4. Uma conta do tipo doador/ONG conseguir publicar um anúncio com os campos obrigatórios e pelo menos uma foto.
 5. Um anúncio aceitar no máximo cinco imagens, rejeitar arquivos acima de 5 MB antes da compressão e exigir ao menos uma imagem para publicação.
 6. O responsável conseguir editar e encerrar seu anúncio; outra conta não conseguir alterá-lo, mesmo tentando acessar diretamente o Supabase.
@@ -91,14 +91,14 @@ Estas decisões não mudam o escopo funcional, mas precisam ser registradas dura
 
 - Quais campos do anúncio são obrigatórios além de nome, espécie, idade, porte, saúde, descrição, cidade e estado.
 - Formatos de imagem aceitos e qualidade/limite final depois da compressão.
-- Como será implementada a consulta controlada do telefone do responsável: deve estar disponível ao usuário autenticado que iniciou contato, mas não em consultas públicas de perfil.
+- O acesso aos dados de contato é restrito a usuários autenticados e anúncios disponíveis; a migration `20261025000000_add_controlled_animal_contacts.sql` implementa esse acesso por função controlada.
 - Quais estados e cidades serão usados nos dados de teste e como será feita a seleção de localização.
 
 ## Alinhamento dos materiais existentes
 
 - **Pré-projeto:** [pre-projeto-mvp.docx](pre-projeto-mvp.docx) e [pre-projeto-mvp.md](pre-projeto-mvp.md) refletem as plataformas, autenticação, filtros, fotos, contato e segurança acordados.
 - **Protótipo:** [fluxo-mvp.svg](../Design/fluxo-mvp.svg) apresenta o fluxo acordado e substitui chat/interesses por autenticação, localização e gestão de anúncios. O desenho anterior permanece em [Arquivo/](../Arquivo/).
-- **Código/README:** a base já contém versões iniciais de lista com filtros por espécie, porte, cidade e estado, detalhes, cadastro/edição e gerenciamento de estado dos próprios anúncios, fotos, autenticação/perfil e integração com Supabase. O contato seguro por WhatsApp ainda não está concluído. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
+- **Código/README:** a base já contém versões iniciais de lista com filtros por espécie, porte, cidade e estado, detalhes, cadastro/edição e gerenciamento de estado dos próprios anúncios, fotos, autenticação/perfil e integração com Supabase. A exibição segura de contato telefônico está implementada no app, mas depende de aplicar e testar a migration controlada no Supabase; a integração com WhatsApp ainda não está concluída. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
 
 ## Regra para mudanças de escopo
 

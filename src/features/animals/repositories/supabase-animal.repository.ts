@@ -51,7 +51,9 @@ export class SupabaseAnimalRepository implements AnimalRepository {
       .maybeSingle();
 
     if (error) throw error;
-    return data ? mapAnimal(data, (path) => this.getPhotoUrl(path)) : null;
+    if (!data) return null;
+    const [animal] = await this.withDonorContacts([mapAnimal(data, (path) => this.getPhotoUrl(path))]);
+    return animal;
   }
 
   async create(input: NewAnimal): Promise<Animal> {
@@ -217,12 +219,47 @@ export class SupabaseAnimalRepository implements AnimalRepository {
   private getPhotoUrl(path: string): string {
     return this.client.storage.from(animalPhotoBucket).getPublicUrl(path).data.publicUrl;
   }
+
+  private async withDonorContacts(animals: Animal[]): Promise<Animal[]> {
+    if (animals.length === 0) return animals;
+
+    const { data: sessionData, error: sessionError } = await this.client.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData.session) return animals;
+
+    const { data: contacts, error } = await this.client.rpc("get_animal_contacts", {
+      p_animal_ids: animals.map((animal) => animal.id),
+    });
+    if (error) {
+      const contactError = error.code === "PGRST202"
+        ? "O acesso seguro ao contato ainda não foi habilitado neste banco. Aplique a migration 20261025000000_add_controlled_animal_contacts.sql."
+        : error.message;
+      return animals.map((animal) => ({
+        ...animal,
+        contactError,
+      }));
+    }
+
+    const contactsByAnimalId = new Map(contacts.map((contact) => [contact.animal_id, contact]));
+    return animals.map((animal) => {
+      const contact = contactsByAnimalId.get(animal.id);
+      return {
+        ...animal,
+        donorName: contact?.donor_name ?? null,
+        donorPhone: contact?.donor_phone ?? null,
+        contactError: null,
+      };
+    });
+  }
 }
 
 function mapAnimal(row: AnimalRow, getPhotoUrl: (path: string) => string): Animal {
   return {
     id: row.id,
     ownerId: row.owner_id,
+    donorName: null,
+    donorPhone: null,
+    contactError: null,
     name: row.name,
     species: row.species,
     breed: row.breed,

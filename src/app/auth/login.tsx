@@ -21,7 +21,18 @@ export default function LoginScreen() {
     setSubmitError(null);
     try {
       await auth.signIn(input);
-      router.replace(returnTo === "/animals/new" ? "/animals/new" : "/account");
+      if (returnTo === "/animals/new") {
+        router.replace("/animals/new");
+      } else if (returnTo === "/animals") {
+        router.replace("/animals");
+      } else if (returnTo?.startsWith("/animals/")) {
+        const animalId = returnTo.slice("/animals/".length);
+        router.replace(/^[A-Za-z0-9-]+$/.test(animalId)
+          ? { pathname: "/animals/[id]", params: { id: animalId } }
+          : "/account");
+      } else {
+        router.replace("/account");
+      }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Não foi possível entrar.");
     }

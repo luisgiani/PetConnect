@@ -138,7 +138,7 @@ Como o aplicativo acessa o banco diretamente por meio do Supabase, a proteção 
 Exemplos de políticas RLS:
 
 - `animals`: qualquer pessoa pode ler animais com status "available"; inserção, edição e remoção exigem sessão autenticada, `owner_id = auth.uid()` e perfil do tipo `doador_ong`.
-- `profiles`: dados de contato não são expostos na navegação pública; o contato via WhatsApp exige sessão autenticada e deve obedecer à política de acesso definida no banco.
+- `profiles`: a leitura direta continua restrita ao próprio usuário. Nome e telefone do responsável por anúncios disponíveis podem ser consultados por usuários autenticados somente via função controlada `get_animal_contacts`; nunca abrir leitura pública de perfis.
 
 Validações críticas existem **também no banco** (constraints, tipos enumerados e RLS), nunca apenas no cliente.
 
@@ -162,8 +162,8 @@ A lista atual aplica filtros por espécie e porte exatos, cidade por correspond�
 
 ## 7. Escopo e Comunicação entre as Partes
 
-1. **MVP:** botão "Entrar em contato" que abre o **WhatsApp** por deep link, disponível para usuário autenticado. A navegação pública não deve expor o telefone do responsável.
-2. **Fora do MVP:** favoritos/interesses e chat interno com Supabase Realtime; essas funcionalidades exigem nova decisão de escopo, tabelas e políticas RLS.
+1. **MVP atual:** somente a tela de detalhes mostra nome e telefone do responsável, para usuários autenticados e apenas em anúncios disponíveis; o link `tel:` inicia uma chamada. A lista de busca não consulta nem recebe dados de contato.
+2. **Evolução possível:** contato via WhatsApp, favoritos/interesses e chat interno com Supabase Realtime exigem nova decisão de escopo e, quando aplicável, tabelas e políticas RLS.
 
 O MVP tem como plataformas-alvo Android e Web. Consulte o [índice da documentação](../README.md) para a ordem de autoridade e os demais documentos ativos.
 
