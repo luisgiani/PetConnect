@@ -89,6 +89,8 @@ Documentos/                      # Requisitos, arquitetura e design
 
 O detalhe segue o mesmo caminho, usando `useAnimal(id)` e a consulta por identificador. A criação usa o hook de mutation e o repositório selecionado. No Supabase, o repositório obtém o usuário autenticado para preencher `owner_id`; as policies do banco continuam sendo a autoridade final sobre o que cada conta pode alterar.
 
+O contato do responsável aparece somente no detalhe do anúncio, nunca nos cards da lista de busca ou de gerenciamento. A consulta da lista não chama a função de contato e não lê `profiles`. No Supabase, ao abrir um detalhe, o repositório só busca contato quando há sessão e chama `get_animal_contacts`, que retorna apenas nome e telefone associados aos IDs solicitados de anúncios ainda disponíveis. A função é `SECURITY DEFINER`, mas verifica a sessão, limita os resultados aos anúncios `available` e tem execução concedida apenas ao papel `authenticated`. A tabela `profiles` continua legível somente pelo próprio titular. O componente de contato também esconde os dados quando não há sessão, inclusive se houver dados de consulta em cache, e oferece um link `tel:` para iniciar uma chamada. Se a RPC falhar, a lista e os detalhes continuam visíveis e a falha é informada na área de contato. Em modo demo, o nome é demonstrativo e não há telefone real.
+
 ### Área do doador/ONG
 
 Em **Minha conta**, perfis `doador_ong` acessam **Gerenciar meus anúncios** (`src/app/animals/manage.tsx`). A tela consulta somente os anúncios da sessão atual com `listMine`, oferece edição pelo formulário compartilhado (`/animals/new?animalId=...`) e alterna o status entre `available` e `adopted`. A policy RLS no Supabase continua garantindo que somente o proprietário possa consultar/alterar seus registros; a filtragem por `owner_id` no repositório não substitui essa proteção. Ao editar fotos, arquivos mantidos permanecem no Storage, novos arquivos são enviados antes de salvar e arquivos removidos são excluídos após o banco confirmar a atualização.
@@ -107,8 +109,11 @@ As migrations são aplicadas em ordem cronológica:
 - `20261007000000_create_profiles_and_auth.sql`: tabela `public.profiles`, trigger de perfil e policies que restringem escrita de anúncios a doadores/ONGs autenticados.
 - `20261021000000_add_animal_location.sql`: adiciona `city` e `state` e valida os valores quando informados.
 - `20261021000001_add_animal_photos_storage.sql`: adiciona os caminhos de fotos, valida até cinco fotos e configura o bucket público `animal-photos` com leitura pública e upload/exclusão apenas por doadores autenticados.
+- `20261025000000_add_controlled_animal_contacts.sql`: disponibiliza nome e telefone do responsável por anúncios disponíveis somente a usuários autenticados, sem ampliar o acesso RLS à tabela `profiles`.
 
 Para atualizar um banco já existente, aplique as migrations pendentes em ordem, uma vez cada. Se a migration de localização ainda não foi aplicada, execute-a antes da migration de fotos. Não execute novamente migrations já aplicadas nem use reset. As colunas `city`/`state` e `photo_paths` preservam os anúncios existentes: registros antigos ficam sem localização e com lista de fotos vazia; os novos anúncios enviados pelo app exigem cidade, UF e ao menos uma foto.
+
+Para habilitar os dados de contato, aplique também a migration de contatos uma única vez depois das migrations de animais e perfis. Sem ela, os dados de contato não serão carregados e a tela informará a falha; não altere as permissões de `profiles` para contornar o erro.
 
 Colunas atuais de `public.animals`:
 
@@ -162,4 +167,4 @@ Ao fazer uma mudança, siga o fluxo completo: atualizar requisito se o comportam
 
 ## 7. Limites conhecidos da implementação
 
-O código atual já tem lista com filtros, detalhe, cadastro/edição de anúncios com cidade/UF e fotos, área de gestão de anúncios, autenticação, perfil e conexão inicial com Supabase. A área do doador permite listar os próprios anúncios, editar dados/fotos, marcar como adotado e reabrir. Isso não significa que o MVP esteja completo. Ainda precisam ser implementados, conforme o [escopo do MVP](../Produto/escopo-mvp.md), contato via WhatsApp com proteção de telefone, e validação abrangente de RLS e dos fluxos Web/Android.
+O código atual já tem lista com filtros, detalhe, cadastro/edição de anúncios com cidade/UF e fotos, área de gestão de anúncios, autenticação, perfil, integração com Supabase e exibição controlada do contato telefônico para usuários autenticados. A área do doador permite listar os próprios anúncios, editar dados/fotos, marcar como adotado e reabrir. Isso não significa que o MVP esteja completo: ainda é necessário aplicar e validar a migration de contatos no Supabase, testar a proteção dos dados com sessões anônimas e autenticadas, validar os fluxos Web/Android e avaliar a integração opcional com WhatsApp.

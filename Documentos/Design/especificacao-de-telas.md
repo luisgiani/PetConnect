@@ -7,7 +7,7 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - O mesmo fluxo funcional deve atender Android e Web responsiva.
 - Usar navegação adequada a cada formato sem acrescentar funcionalidades exclusivas fora do escopo.
 - Não incluir Chat, Meus Chats, Meus Interesses ou ações de favoritar/salvar.
-- A lista e os detalhes são públicos; contato e gestão de anúncios exigem sessão conforme o escopo.
+- A lista e os detalhes dos animais são públicos; o nome e telefone do responsável só são exibidos com sessão autenticada.
 - Exibir estados claros de carregamento, vazio, erro, validação e sucesso.
 
 ## Telas
@@ -22,15 +22,15 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 
 - Mostrar somente anúncios disponíveis.
 - Filtrar por espécie, porte, cidade e estado.
-- Cada card mostra foto principal, nome, espécie, idade, porte e localização.
+- Cada card mostra somente as informações do animal: foto principal, nome, espécie, idade, porte e localização. O contato do responsável não aparece nesta tela.
 - Incluir estados de carregamento, lista vazia e erro com ação de tentar novamente.
 
 ### 3. Detalhes do animal
 
 - Apresentar a galeria em destaque no topo, com uma foto por vez, setas anterior/próxima e indicador da posição. Abaixo, mostrar nome e localização, informações principais em cartões e depois a descrição.
-- Oferecer **Entrar em contato pelo WhatsApp**.
-- Sem sessão, orientar a pessoa a entrar ou criar conta e, após autenticar, retomar o animal solicitado.
-- Não exibir telefone a visitantes anônimos nem em resultados públicos.
+- Mostrar nome e telefone do responsável somente com sessão autenticada; o telefone abre o aplicativo de chamadas quando selecionado.
+- Sem sessão, orientar a pessoa a entrar para visualizar os dados de contato.
+- Nunca incluir telefone na consulta pública de animais nem permitir leitura pública de perfis.
 
 ### 4. Entrar e criar conta
 
@@ -60,15 +60,14 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - Rejeitar arquivos acima de 5 MB antes da compressão e comunicar erro de formato ou tamanho.
 - Após a publicação, confirmar o sucesso e fornecer acesso ao detalhe ou à área do responsável.
 
-### 8. Contato pelo WhatsApp
+### 8. Contato do responsável
 
-- Disponibilizar somente para usuário autenticado.
-- Abrir o WhatsApp com o telefone do responsável obtido por caminho controlado.
-- Não incluir o telefone nas consultas públicas de perfil, lista ou detalhe anônimo.
-- Comunicar quando não for possível abrir o WhatsApp.
+- Disponibilizar nome e telefone somente na tela de detalhes do anúncio e para usuário autenticado.
+- Obter os dados por função controlada no banco, limitada aos anúncios disponíveis; não abrir a leitura pública de `profiles`.
+- Exibir um link de telefone para iniciar uma chamada no dispositivo.
 
 ## Fluxos
 
-**Adotante:** Início → Lista e filtros → Detalhes → Entrar/criar conta se necessário → Confirmar e-mail → WhatsApp.
+**Adotante:** Início → Lista e filtros → Detalhes → Entrar/criar conta para ver o contato → telefone do responsável.
 
 **Doador/ONG:** Criar conta → Confirmar e-mail → Completar perfil → Área do doador/ONG → Cadastrar com ao menos uma foto → Publicar → Editar ou encerrar.
