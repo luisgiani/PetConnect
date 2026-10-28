@@ -42,7 +42,9 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 ### 5. Completar perfil
 
 - Solicitar nome e os dados necessários ao perfil.
+- Permitir editar nome, telefone, cidade, UF e biografia opcional.
 - Para Doador/ONG, coletar telefone para contato.
+- Exibir cidade, UF e biografia do responsável no detalhe dos anúncios dele.
 - Oferecer edição dos dados e encerramento da sessão.
 
 ### 6. Área do doador/ONG
@@ -65,6 +67,8 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - Disponibilizar nome e telefone somente na tela de detalhes do anúncio e para usuário autenticado.
 - Obter os dados por função controlada no banco, limitada aos anúncios disponíveis; não abrir a leitura pública de `profiles`.
 - Exibir um link de telefone para iniciar uma chamada no dispositivo.
+- Exibir o botão **Conversar pelo WhatsApp**, com mensagem inicial preenchida; usar o WhatsApp no Android e o WhatsApp Web/navegador na Web.
+- Informar claramente quando nenhum dos destinos puder ser aberto.
 
 ## Fluxos
 

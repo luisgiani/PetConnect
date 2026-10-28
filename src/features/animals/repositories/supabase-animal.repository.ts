@@ -247,6 +247,9 @@ export class SupabaseAnimalRepository implements AnimalRepository {
         ...animal,
         donorName: contact?.donor_name ?? null,
         donorPhone: contact?.donor_phone ?? null,
+        donorCity: contact?.donor_city ?? null,
+        donorState: contact?.donor_state ?? null,
+        donorBio: contact?.donor_bio ?? null,
         contactError: null,
       };
     });
@@ -259,6 +262,9 @@ function mapAnimal(row: AnimalRow, getPhotoUrl: (path: string) => string): Anima
     ownerId: row.owner_id,
     donorName: null,
     donorPhone: null,
+    donorCity: null,
+    donorState: null,
+    donorBio: null,
     contactError: null,
     name: row.name,
     species: row.species,

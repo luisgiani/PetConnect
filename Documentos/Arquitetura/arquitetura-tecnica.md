@@ -162,8 +162,8 @@ A lista atual aplica filtros por espécie e porte exatos, cidade por correspond�
 
 ## 7. Escopo e Comunicação entre as Partes
 
-1. **MVP atual:** somente a tela de detalhes mostra nome e telefone do responsável, para usuários autenticados e apenas em anúncios disponíveis; o link `tel:` inicia uma chamada. A lista de busca não consulta nem recebe dados de contato.
-2. **Evolução possível:** contato via WhatsApp, favoritos/interesses e chat interno com Supabase Realtime exigem nova decisão de escopo e, quando aplicável, tabelas e políticas RLS.
+1. **MVP atual:** somente a tela de detalhes mostra nome e telefone do responsável, para usuários autenticados e apenas em anúncios disponíveis; os links `tel:` e **Conversar pelo WhatsApp** iniciam o contato. A lista de busca não consulta nem recebe dados de contato.
+2. **Fora do MVP atual:** favoritos/interesses e chat interno com Supabase Realtime exigem nova decisão de escopo e, quando aplicável, tabelas e políticas RLS.
 
 O MVP tem como plataformas-alvo Android e Web. Consulte o [índice da documentação](../README.md) para a ordem de autoridade e os demais documentos ativos.
 

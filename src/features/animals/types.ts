@@ -22,6 +22,9 @@ export type Animal = {
   ownerId: string;
   donorName: string | null;
   donorPhone: string | null;
+  donorCity: string | null;
+  donorState: string | null;
+  donorBio: string | null;
   contactError?: string | null;
   name: string;
   species: AnimalSpecies;
@@ -40,7 +43,8 @@ export type Animal = {
 
 export type NewAnimal = Omit<
   Animal,
-  "id" | "ownerId" | "donorName" | "donorPhone" | "status" | "createdAt" | "city" | "state" | "photos" | "photoPaths"
+  "id" | "ownerId" | "donorName" | "donorPhone" | "donorCity" | "donorState" | "donorBio" | "contactError"
+  | "status" | "createdAt" | "city" | "state" | "photos" | "photoPaths"
 > & {
   city: string;
   state: string;

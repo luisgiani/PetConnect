@@ -5,7 +5,18 @@ export type UserProfile = {
   name: string;
   profileType: ProfileType;
   phone: string | null;
+  city: string | null;
+  state: string | null;
+  bio: string | null;
   createdAt: string;
+};
+
+export type ProfileUpdateInput = {
+  name: string;
+  phone: string | null;
+  city: string | null;
+  state: string | null;
+  bio: string | null;
 };
 
 export type SignUpInput = {

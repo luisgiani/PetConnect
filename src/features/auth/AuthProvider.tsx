@@ -2,7 +2,7 @@ import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AuthRepository } from "@/features/auth/repositories/auth.repository";
 import { ProfileRepository } from "@/features/auth/repositories/profile.repository";
-import type { SignInInput, SignUpInput, UserProfile } from "@/features/auth/types";
+import type { ProfileUpdateInput, SignInInput, SignUpInput, UserProfile } from "@/features/auth/types";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -18,6 +18,7 @@ type AuthContextValue = {
   signOut(): Promise<void>;
   exchangeCodeForSession(code: string): Promise<void>;
   verifyEmailToken(tokenHash: string, type: "signup" | "email"): Promise<void>;
+  updateProfile(input: ProfileUpdateInput): Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -144,7 +145,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!authRepository) throw new Error("A autenticação Supabase não está configurada.");
       await authRepository.verifyEmailToken(tokenHash, type);
     },
-  }), [authRepository, error, loading, profile, profileLoading, session]);
+    async updateProfile(input) {
+      if (!profileRepository || !session) throw new Error("Entre na sua conta para editar o perfil.");
+      setError(null);
+      const updatedProfile = await profileRepository.update(session.user.id, input);
+      setProfile(updatedProfile);
+    },
+  }), [authRepository, error, loading, profile, profileLoading, profileRepository, session]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
