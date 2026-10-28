@@ -9,6 +9,9 @@ export type Database = {
           name: string;
           profile_type: "adotante" | "doador_ong";
           phone: string | null;
+          city: string | null;
+          state: string | null;
+          bio: string | null;
           created_at: string;
         };
         Insert: {
@@ -16,11 +19,17 @@ export type Database = {
           name: string;
           profile_type: "adotante" | "doador_ong";
           phone?: string | null;
+          city?: string | null;
+          state?: string | null;
+          bio?: string | null;
           created_at?: string;
         };
         Update: {
           name?: string;
           phone?: string | null;
+          city?: string | null;
+          state?: string | null;
+          bio?: string | null;
         };
         Relationships: [];
       };
@@ -81,6 +90,9 @@ export type Database = {
           animal_id: string;
           donor_name: string;
           donor_phone: string | null;
+          donor_city: string | null;
+          donor_state: string | null;
+          donor_bio: string | null;
         }[];
       };
     };

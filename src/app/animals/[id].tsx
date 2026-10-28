@@ -91,6 +91,9 @@ export default function AnimalDetailsScreen() {
         <DonorContact
           donorName={animal.donorName}
           donorPhone={animal.donorPhone}
+          donorCity={animal.donorCity}
+          donorState={animal.donorState}
+          donorBio={animal.donorBio}
           contactError={animal.contactError}
           returnTo={`/animals/${animal.id}`}
         />
