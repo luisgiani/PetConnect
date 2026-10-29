@@ -16,7 +16,8 @@
         {
           "photosPermission": "O PetConnect precisa acessar suas fotos para incluir imagens nos anúncios de adoção."
         }
-      ]
+      ],
+      "expo-status-bar"
     ]
   }
 }
