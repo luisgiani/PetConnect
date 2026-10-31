@@ -153,7 +153,22 @@ Após publicar, o anúncio deve aparecer na lista, a foto principal no cartão e
 npm.cmd run typecheck
 ```
 
-O `package.json` não define atualmente um script de testes automatizados. Não reporte `typecheck` como teste funcional: ele verifica os tipos TypeScript, não autenticação, RLS ou comportamento em tempo de execução.
+O script `npm test` executa os testes unitários em `tests/` com Vitest. Eles cobrem formatadores e validações de perfil/cadastro, filtros do repositório demo e regras de quantidade/tamanho de fotos. Não reporte `typecheck` como teste funcional: ele verifica os tipos TypeScript, não autenticação, RLS ou comportamento em tempo de execução. Os testes unitários também não substituem a validação das policies RLS no Supabase.
+
+Para validar as policies RLS no projeto Supabase, use `npm.cmd run test:rls` com duas contas de teste confirmadas e um anúncio disponível. Configure no ambiente, sem gravar no repositório:
+
+```powershell
+$env:SUPABASE_RLS_URL = "https://SEU-PROJETO.supabase.co"
+$env:SUPABASE_RLS_KEY = "sb_publishable_SUA_CHAVE"
+$env:SUPABASE_RLS_OWNER_EMAIL = "doador-teste@example.com"
+$env:SUPABASE_RLS_OWNER_PASSWORD = "SENHA_DA_CONTA"
+$env:SUPABASE_RLS_OTHER_EMAIL = "adotante-teste@example.com"
+$env:SUPABASE_RLS_OTHER_PASSWORD = "SENHA_DA_CONTA"
+$env:SUPABASE_RLS_ANIMAL_ID = "UUID_DE_UM_ANUNCIO_AVAILABLE"
+npm.cmd run test:rls
+```
+
+O teste verifica leitura do próprio perfil, bloqueio de leitura direta de outro perfil, acesso ao contato somente pela função controlada e bloqueio de inserção de anúncio por uma conta adotante. Ele não usa `service_role`, não cria contas e não executa `db reset`.
 
 ### Verificação manual sugerida
 

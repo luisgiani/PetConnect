@@ -76,6 +76,8 @@ O adaptador Supabase já lista, consulta, cadastra animais e envia fotos. As tel
 - `npm start`: inicia o Expo.
 - `npm run web`: inicia no navegador.
 - `npm run typecheck`: verifica os tipos TypeScript.
+- `npm test`: executa os testes unitários.
+- `npm run test:rls`: valida policies RLS com duas contas de teste configuradas no ambiente.
 
 ## Próximos passos sugeridos
 
