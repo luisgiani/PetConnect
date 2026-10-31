@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AuthField } from "@/components/AuthField";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { formatBrazilPhone, onlyLettersAndSpaces, phoneDigits } from "@/features/auth/profile.formatters";
 import { signUpSchema, type SignUpFormInput } from "@/features/auth/schemas/auth.schema";
 import type { ProfileType } from "@/features/auth/types";
 
@@ -28,7 +29,8 @@ export default function SignUpScreen() {
     try {
       const needsConfirmation = await auth.signUp({
         ...input,
-        phone: input.phone.trim() || null,
+        name: input.name.trim(),
+        phone: phoneDigits(input.phone) || null,
       });
       if (needsConfirmation) {
         router.replace({ pathname: "/auth/confirmation", params: { email: input.email } });
@@ -76,7 +78,7 @@ export default function SignUpScreen() {
           control={control}
           name="name"
           render={({ field: { onChange, onBlur, value } }) => (
-            <AuthField autoCapitalize="words" label="Nome" onBlur={onBlur} onChangeText={onChange} value={value} error={errors.name?.message} />
+            <AuthField autoCapitalize="words" label="Nome" onBlur={onBlur} onChangeText={(text) => onChange(onlyLettersAndSpaces(text))} value={value} error={errors.name?.message} />
           )}
         />
         <Controller
@@ -98,7 +100,7 @@ export default function SignUpScreen() {
             control={control}
             name="phone"
             render={({ field: { onChange, onBlur, value } }) => (
-              <AuthField keyboardType="phone-pad" label="Telefone para contato" onBlur={onBlur} onChangeText={onChange} value={value} error={errors.phone?.message} />
+              <AuthField keyboardType="phone-pad" label="Telefone para contato" onBlur={onBlur} onChangeText={(text) => onChange(formatBrazilPhone(text))} value={value} error={errors.phone?.message} />
             )}
           />
         ) : null}
