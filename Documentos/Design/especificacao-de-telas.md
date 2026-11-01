@@ -22,6 +22,7 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 
 - Mostrar somente anúncios disponíveis.
 - Filtrar por espécie, porte, cidade e estado.
+- Quando a pessoa estiver autenticada e tiver cidade/UF no perfil, ordenar primeiro anúncios da mesma cidade, depois anúncios da mesma UF; sem localização, manter a lista completa na ordem padrão.
 - Cada card mostra somente as informações do animal: foto principal, nome, espécie, idade, porte e localização. O contato do responsável não aparece nesta tela.
 - Incluir estados de carregamento, lista vazia e erro com ação de tentar novamente.
 

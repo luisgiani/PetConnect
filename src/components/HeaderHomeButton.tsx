@@ -17,6 +17,7 @@ export function HeaderHomeButton() {
 
 const styles = StyleSheet.create({
   button: { alignItems: "center", justifyContent: "center", minHeight: 44, minWidth: 52, paddingHorizontal: 8 },
-  label: { color: "#593a8a", fontSize: 14, fontWeight: "700" },
+  label: { color: "#b85c38", fontSize: 14, fontWeight: "700" },
   pressed: { opacity: 0.7 },
 });
+

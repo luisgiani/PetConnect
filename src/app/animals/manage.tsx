@@ -96,12 +96,13 @@ const styles = StyleSheet.create({
   container: { gap: 16, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
   stateContainer: { gap: 14, padding: 20, width: "100%", maxWidth: 560, alignSelf: "center" },
   heading: { gap: 6, marginBottom: 4 },
-  title: { color: "#30283a", fontSize: 24, fontWeight: "800" },
-  subtitle: { color: "#726a78", fontSize: 15, lineHeight: 22 },
-  item: { backgroundColor: "#fff", borderColor: "#eee3d4", borderRadius: 16, borderWidth: 1, gap: 12, padding: 10 },
+  title: { color: "#3f2d2a", fontSize: 24, fontWeight: "800" },
+  subtitle: { color: "#88756d", fontSize: 15, lineHeight: 22 },
+  item: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 12, padding: 10 },
   statusRow: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: 8 },
   status: { borderRadius: 14, fontSize: 13, fontWeight: "700", marginRight: "auto", overflow: "hidden", paddingHorizontal: 10, paddingVertical: 6 },
-  available: { backgroundColor: "#d9f1e8", color: "#276b59" },
-  adopted: { backgroundColor: "#f0e8ff", color: "#593a8a" },
+  available: { backgroundColor: "#e6f3eb", color: "#31705b" },
+  adopted: { backgroundColor: "#ffe8dc", color: "#b85c38" },
   error: { color: "#b3261e", lineHeight: 21 },
 });
+

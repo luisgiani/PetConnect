@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
+﻿import { StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
 
 type AuthFieldProps = TextInputProps & {
   label: string;
@@ -22,8 +22,9 @@ export function AuthField({ label, error, ...inputProps }: AuthFieldProps) {
 
 const styles = StyleSheet.create({
   field: { gap: 7 },
-  label: { color: "#30283a", fontSize: 15, fontWeight: "700" },
-  input: { backgroundColor: "#fff", borderColor: "#e5dce9", borderRadius: 10, borderWidth: 1, color: "#30283a", minHeight: 46, paddingHorizontal: 12 },
+  label: { color: "#3f2d2a", fontSize: 15, fontWeight: "700" },
+  input: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, color: "#3f2d2a", minHeight: 46, paddingHorizontal: 12 },
   inputError: { borderColor: "#b3261e" },
   error: { color: "#b3261e", fontSize: 13 },
 });
+

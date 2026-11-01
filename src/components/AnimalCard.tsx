@@ -10,12 +10,12 @@ export function AnimalCard({ animal }: AnimalCardProps) {
       <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
         <Pressable accessibilityRole="link" style={styles.animalLink}>
           {animal.photos[0]
-            ? <Image source={{ uri: animal.photos[0] }} style={styles.avatar} />
+            ? <Image source={{ uri: animal.photos[0] }} resizeMode="cover" style={styles.avatar} />
             : <View style={styles.avatar}><Text style={styles.emoji}>{animal.species === "gato" ? "🐱" : "🐶"}</Text></View>}
           <View style={styles.details}>
             <Text style={styles.name}>{animal.name}</Text>
             <Text style={styles.subtitle}>{formatAge(animal.ageMonths)} · {animal.breed || labelSpecies(animal.species)}</Text>
-            <Text style={styles.subtitle}>Porte {animal.size} · {formatLocation(animal.city, animal.state)}</Text>
+            <Text style={styles.location}>⌖ {formatLocation(animal.city, animal.state)}</Text>
           </View>
           <Text style={styles.arrow}>›</Text>
         </Pressable>
@@ -43,32 +43,34 @@ function formatLocation(city: string | null, state: string | null): string {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
-    borderColor: "#eee3d4",
-    borderRadius: 16,
+    borderColor: "#ead8cd",
+    borderRadius: 20,
     borderWidth: 1,
     gap: 12,
-    padding: 12,
+    padding: 10,
   },
   animalLink: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 14,
+    gap: 15,
   },
   avatar: {
-    backgroundColor: "#fff0dc",
-    borderRadius: 12,
-    height: 76,
-    width: 76,
+    backgroundColor: "#ffead8",
+    borderRadius: 16,
+    height: 88,
+    width: 88,
   },
   emoji: {
     alignItems: "center",
     fontSize: 42,
     textAlign: "center",
     textAlignVertical: "center",
-    lineHeight: 76,
+    lineHeight: 88,
   },
   details: { flex: 1, gap: 5 },
-  name: { color: "#30283a", fontSize: 18, fontWeight: "700" },
-  subtitle: { color: "#726a78", fontSize: 14 },
-  arrow: { color: "#7650aa", fontSize: 30, paddingHorizontal: 4 },
+  name: { color: "#3f2d2a", fontSize: 19, fontWeight: "800" },
+  subtitle: { color: "#88756d", fontSize: 14 },
+  location: { color: "#a6533d", fontSize: 14, fontWeight: "700" },
+  arrow: { color: "#a6533d", fontSize: 30, fontWeight: "300", paddingHorizontal: 4 },
 });
+

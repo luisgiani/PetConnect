@@ -143,16 +143,16 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   container: { gap: 16, padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#593a8a", fontSize: 27, fontWeight: "800" },
-  message: { color: "#493d57", fontSize: 16, lineHeight: 23 },
-  formCard: { backgroundColor: "#fff", borderColor: "#eee3d4", borderRadius: 16, borderWidth: 1, gap: 14, padding: 16 },
-  profileCard: { backgroundColor: "#fff", borderColor: "#eee3d4", borderRadius: 16, borderWidth: 1, gap: 10, padding: 16 },
-  sectionTitle: { color: "#30283a", fontSize: 20, fontWeight: "800" },
-  profileValue: { color: "#493d57", fontSize: 15, lineHeight: 22 },
+  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
+  message: { color: "#604b45", fontSize: 16, lineHeight: 23 },
+  formCard: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 14, padding: 16 },
+  profileCard: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 10, padding: 16 },
+  sectionTitle: { color: "#3f2d2a", fontSize: 20, fontWeight: "800" },
+  profileValue: { color: "#604b45", fontSize: 15, lineHeight: 22 },
   locationRow: { flexDirection: "row", gap: 10 },
   cityField: { flex: 1 },
   stateField: { width: 84 },
-  success: { color: "#276b59", lineHeight: 22 },
+  success: { color: "#31705b", lineHeight: 22 },
   error: { color: "#b3261e", lineHeight: 22 },
 });
 
@@ -160,3 +160,4 @@ function formatLocation(city: string | null, state: string | null): string {
   if (city && state) return `${city} - ${state}`;
   return city || state || "Não informada";
 }
+
