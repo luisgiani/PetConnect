@@ -106,14 +106,15 @@ function formatLocation(city: string | null, state: string | null): string {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#f0e8ff", borderRadius: 12, gap: 6, padding: 12 },
-  title: { color: "#30283a", fontSize: 14, fontWeight: "700" },
-  text: { color: "#62596a", fontSize: 14 },
-  phone: { color: "#593a8a", fontSize: 14, fontWeight: "700", textDecorationLine: "underline" },
-  link: { color: "#593a8a", fontSize: 14, fontWeight: "600" },
+  container: { backgroundColor: "#ffe8dc", borderRadius: 12, gap: 6, padding: 12 },
+  title: { color: "#3f2d2a", fontSize: 14, fontWeight: "700" },
+  text: { color: "#776761", fontSize: 14 },
+  phone: { color: "#b85c38", fontSize: 14, fontWeight: "700", textDecorationLine: "underline" },
+  link: { color: "#b85c38", fontSize: 14, fontWeight: "600" },
   error: { color: "#b3261e", fontSize: 14, lineHeight: 20 },
-  bio: { color: "#62596a", fontSize: 14, lineHeight: 20, marginTop: 2 },
+  bio: { color: "#776761", fontSize: 14, lineHeight: 20, marginTop: 2 },
   whatsappButton: { alignItems: "center", backgroundColor: "#25d366", borderRadius: 10, minHeight: 44, justifyContent: "center", paddingHorizontal: 14 },
   whatsappLabel: { color: "#fff", fontSize: 14, fontWeight: "700" },
   pressed: { opacity: 0.75 },
 });
+

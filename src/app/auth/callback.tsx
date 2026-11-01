@@ -80,6 +80,7 @@ export default function AuthCallbackScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 18, justifyContent: "center", padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#593a8a", fontSize: 23, fontWeight: "800" },
+  title: { color: "#b85c38", fontSize: 23, fontWeight: "800" },
   error: { color: "#b3261e", lineHeight: 22 },
 });
+

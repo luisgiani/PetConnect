@@ -24,11 +24,11 @@ export default function RootLayout() {
         <StatusBar style="dark" />
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: "#fffaf4" },
-            headerTintColor: "#593a8a",
+            headerStyle: { backgroundColor: "#fff8f0" },
+            headerTintColor: "#b85c38",
             headerTitleStyle: { fontWeight: "700" },
             headerRight: () => <HeaderHomeButton />,
-            contentStyle: { backgroundColor: "#fffaf4" },
+            contentStyle: { backgroundColor: "#fff8f0" },
           }}
         >
           <Stack.Screen
@@ -49,3 +49,4 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
+

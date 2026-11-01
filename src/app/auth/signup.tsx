@@ -116,17 +116,18 @@ export default function SignUpScreen() {
 
 const styles = StyleSheet.create({
   container: { gap: 17, padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#593a8a", fontSize: 27, fontWeight: "800" },
-  intro: { color: "#62596a", lineHeight: 22 },
+  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
+  intro: { color: "#776761", lineHeight: 22 },
   notice: { color: "#7a5100", backgroundColor: "#fff2cc", borderRadius: 10, lineHeight: 21, padding: 12 },
   field: { gap: 8 },
-  label: { color: "#30283a", fontSize: 15, fontWeight: "700" },
+  label: { color: "#3f2d2a", fontSize: 15, fontWeight: "700" },
   options: { flexDirection: "row", gap: 10 },
-  option: { backgroundColor: "#fff", borderColor: "#e5dce9", borderRadius: 10, borderWidth: 1, flex: 1, padding: 13 },
-  optionSelected: { backgroundColor: "#f0e8ff", borderColor: "#b69bdf" },
-  optionText: { color: "#62596a", textAlign: "center" },
-  optionTextSelected: { color: "#593a8a", fontWeight: "700" },
+  option: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, flex: 1, padding: 13 },
+  optionSelected: { backgroundColor: "#ffe8dc", borderColor: "#e8a18e" },
+  optionText: { color: "#776761", textAlign: "center" },
+  optionTextSelected: { color: "#b85c38", fontWeight: "700" },
   error: { color: "#b3261e", lineHeight: 21 },
-  footer: { color: "#62596a", textAlign: "center" },
-  link: { color: "#593a8a", fontWeight: "700", textAlign: "center" },
+  footer: { color: "#776761", textAlign: "center" },
+  link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
 });
+

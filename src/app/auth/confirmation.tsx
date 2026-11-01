@@ -21,8 +21,9 @@ export default function EmailConfirmationScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 18, justifyContent: "center", padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#593a8a", fontSize: 27, fontWeight: "800" },
-  message: { color: "#493d57", fontSize: 16, lineHeight: 24 },
-  note: { color: "#62596a", lineHeight: 22 },
-  link: { color: "#593a8a", fontWeight: "700", textAlign: "center" },
+  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
+  message: { color: "#604b45", fontSize: 16, lineHeight: 24 },
+  note: { color: "#776761", lineHeight: 22 },
+  link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
 });
+
