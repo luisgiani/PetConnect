@@ -12,6 +12,7 @@ import { useAnimal, useCreateAnimal, useUpdateAnimal } from "@/features/animals/
 import { MAX_ANIMAL_PHOTOS, MAX_PHOTO_SIZE_BYTES } from "@/features/animals/photo.constants";
 import type { AnimalHealth, AnimalPhotoInput, AnimalSize, AnimalSpecies } from "@/features/animals/types";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { colors } from "@/theme/colors";
 
 const speciesOptions: { value: AnimalSpecies; label: string }[] = [
   { value: "cachorro", label: "Cachorro" },
@@ -344,23 +345,22 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 const styles = StyleSheet.create({
   container: { gap: 16, padding: 20, width: "100%", maxWidth: 680, alignSelf: "center" },
   accessMessage: { flex: 1, gap: 16, justifyContent: "center", padding: 20, width: "100%", maxWidth: 680, alignSelf: "center" },
-  intro: { color: "#776761", fontSize: 15, lineHeight: 22, marginBottom: 2 },
+  intro: { color: colors.textSecondary, fontSize: 15, lineHeight: 22, marginBottom: 2 },
   field: { gap: 7 },
-  label: { color: "#3f2d2a", fontSize: 15, fontWeight: "700" },
-  input: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, color: "#3f2d2a", minHeight: 46, paddingHorizontal: 12 },
+  label: { color: colors.navy, fontSize: 15, fontWeight: "700" },
+  input: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, color: colors.text, minHeight: 46, paddingHorizontal: 12 },
   textarea: { minHeight: 110, paddingTop: 12 },
-  photoHint: { color: "#88756d", fontSize: 13, lineHeight: 19 },
+  photoHint: { color: colors.textSecondary, fontSize: 13, lineHeight: 19 },
   photoList: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   photoItem: { alignItems: "center", gap: 6 },
-  photoPreview: { backgroundColor: "#ffead8", borderRadius: 10, height: 96, width: 96 },
+  photoPreview: { backgroundColor: colors.lilac, borderRadius: 10, height: 96, width: 96 },
   removePhoto: { padding: 6 },
-  removePhotoText: { color: "#b3261e", fontSize: 13, fontWeight: "600" },
+  removePhotoText: { color: colors.danger, fontSize: 13, fontWeight: "600" },
   choices: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  choice: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10 },
-  choiceSelected: { backgroundColor: "#ffe8dc", borderColor: "#e8a18e" },
-  choiceText: { color: "#776761" },
-  choiceTextSelected: { color: "#b85c38", fontWeight: "700" },
-  error: { color: "#b3261e", fontSize: 13 },
-  submitError: { color: "#b3261e", lineHeight: 21 },
+  choice: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 10, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 10 },
+  choiceSelected: { backgroundColor: colors.lilac, borderColor: "#CFC6FF" },
+  choiceText: { color: colors.textSecondary },
+  choiceTextSelected: { color: colors.violetDark, fontWeight: "700" },
+  error: { color: colors.danger, fontSize: 13 },
+  submitError: { color: colors.danger, lineHeight: 21 },
 });
-

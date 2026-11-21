@@ -9,6 +9,8 @@ import { useAuth } from "@/features/auth/AuthProvider";
 import { formatBrazilPhone, onlyLettersAndSpaces, phoneDigits } from "@/features/auth/profile.formatters";
 import { signUpSchema, type SignUpFormInput } from "@/features/auth/schemas/auth.schema";
 import type { ProfileType } from "@/features/auth/types";
+import { getAuthErrorMessage } from "@/features/auth/auth-error";
+import { colors } from "@/theme/colors";
 
 const profileOptions: { value: ProfileType; label: string }[] = [
   { value: "adotante", label: "Adotante" },
@@ -38,7 +40,7 @@ export default function SignUpScreen() {
         router.replace("/animals");
       }
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Não foi possível criar a conta.");
+      setSubmitError(getAuthErrorMessage(error, "Não foi possível criar a conta."));
     }
   });
 
@@ -116,17 +118,17 @@ export default function SignUpScreen() {
 
 const styles = StyleSheet.create({
   container: { gap: 17, padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
-  intro: { color: "#776761", lineHeight: 22 },
-  notice: { color: "#7a5100", backgroundColor: "#fff2cc", borderRadius: 10, lineHeight: 21, padding: 12 },
+  title: { color: colors.navy, fontSize: 27, fontWeight: "900" },
+  intro: { color: colors.textSecondary, lineHeight: 22 },
+  notice: { color: colors.warningText, backgroundColor: colors.warningSurface, borderRadius: 10, lineHeight: 21, padding: 12 },
   field: { gap: 8 },
-  label: { color: "#3f2d2a", fontSize: 15, fontWeight: "700" },
+  label: { color: colors.navy, fontSize: 15, fontWeight: "700" },
   options: { flexDirection: "row", gap: 10 },
-  option: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, flex: 1, padding: 13 },
-  optionSelected: { backgroundColor: "#ffe8dc", borderColor: "#e8a18e" },
-  optionText: { color: "#776761", textAlign: "center" },
-  optionTextSelected: { color: "#b85c38", fontWeight: "700" },
-  error: { color: "#b3261e", lineHeight: 21 },
-  footer: { color: "#776761", textAlign: "center" },
-  link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
+  option: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, flex: 1, padding: 13 },
+  optionSelected: { backgroundColor: colors.lilac, borderColor: "#BFB3FF" },
+  optionText: { color: colors.textSecondary, textAlign: "center" },
+  optionTextSelected: { color: colors.violetDark, fontWeight: "700" },
+  error: { color: colors.danger, lineHeight: 21 },
+  footer: { color: colors.textSecondary, textAlign: "center" },
+  link: { color: colors.violetDark, fontWeight: "700", textAlign: "center" },
 });

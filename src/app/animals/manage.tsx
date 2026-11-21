@@ -7,6 +7,7 @@ import { StateMessage } from "@/components/StateMessage";
 import { useMyAnimals, useSetAnimalStatus } from "@/features/animals/hooks/useAnimals";
 import type { AnimalStatus } from "@/features/animals/types";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { colors } from "@/theme/colors";
 
 export default function ManageAnimalsScreen() {
   const auth = useAuth();
@@ -103,14 +104,14 @@ const styles = StyleSheet.create({
   container: { gap: 16, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
   stateContainer: { gap: 14, padding: 20, width: "100%", maxWidth: 560, alignSelf: "center" },
   heading: { gap: 6, marginBottom: 4 },
-  title: { color: "#3f2d2a", fontSize: 24, fontWeight: "800" },
-  subtitle: { color: "#88756d", fontSize: 15, lineHeight: 22 },
-  item: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 12, padding: 10 },
+  title: { color: colors.navy, fontSize: 24, fontWeight: "900" },
+  subtitle: { color: colors.textSecondary, fontSize: 15, lineHeight: 22 },
+  item: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, gap: 12, padding: 10 },
   statusRow: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: 8 },
   status: { borderRadius: 14, fontSize: 13, fontWeight: "700", marginRight: "auto", overflow: "hidden", paddingHorizontal: 10, paddingVertical: 6 },
-  available: { backgroundColor: "#e6f3eb", color: "#31705b" },
-  adopted: { backgroundColor: "#ffe8dc", color: "#b85c38" },
-  error: { color: "#b3261e", lineHeight: 21 },
-  emptyIcon: { color: "#e98973", fontSize: 44, fontWeight: "700", textAlign: "center" },
-  emptyTitle: { color: "#3f2d2a", fontSize: 21, fontWeight: "800", textAlign: "center" },
+  available: { backgroundColor: colors.successSurface, color: colors.success },
+  adopted: { backgroundColor: colors.lilac, color: colors.violetDark },
+  error: { color: colors.danger, lineHeight: 21 },
+  emptyIcon: { color: colors.pink, fontSize: 44, fontWeight: "700", textAlign: "center" },
+  emptyTitle: { color: colors.navy, fontSize: 21, fontWeight: "900", textAlign: "center" },
 });

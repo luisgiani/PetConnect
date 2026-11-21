@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import type { Animal } from "@/features/animals/types";
+import { colors } from "@/theme/colors";
 
 type AnimalCardProps = { animal: Animal; interactive?: boolean };
 
@@ -88,15 +89,15 @@ function formatLocation(city: string | null, state: string | null): string {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff",
-    borderColor: "#ead8cd",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 22,
     borderWidth: 1,
     overflow: "hidden",
   },
   post: { gap: 0 },
   photoFrame: {
-    backgroundColor: "#ffead8",
+    backgroundColor: colors.lilac,
     overflow: "hidden",
     position: "relative",
     width: "100%",
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   photo: { height: "100%", width: "100%" },
   photoPlaceholder: { alignItems: "center", flex: 1, justifyContent: "center" },
   emoji: { fontSize: 88 },
-  placeholderLabel: { color: "#88756d", fontSize: 14, fontWeight: "600", marginTop: 8 },
+  placeholderLabel: { color: colors.textSecondary, fontSize: 14, fontWeight: "600", marginTop: 8 },
   photoOverlay: {
     alignItems: "center",
     flexDirection: "row",
@@ -115,9 +116,9 @@ const styles = StyleSheet.create({
     top: 14,
   },
   statusBadge: {
-    backgroundColor: "#fff8f0",
+    backgroundColor: colors.surface,
     borderRadius: 16,
-    color: "#a6533d",
+    color: colors.violetDark,
     fontSize: 13,
     fontWeight: "800",
     overflow: "hidden",
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   photoCount: {
-    backgroundColor: "rgba(63, 45, 42, 0.78)",
+    backgroundColor: "rgba(18, 29, 58, 0.78)",
     borderRadius: 16,
     color: "#fff",
     fontSize: 13,
@@ -136,21 +137,21 @@ const styles = StyleSheet.create({
   },
   content: { gap: 7, padding: 17 },
   metaRow: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  species: { color: "#a6533d", fontSize: 13, fontWeight: "800", textTransform: "uppercase" },
-  meta: { color: "#88756d", fontSize: 13 },
-  name: { color: "#3f2d2a", fontSize: 23, fontWeight: "900" },
-  location: { color: "#604b45", fontSize: 14, fontWeight: "600" },
-  description: { color: "#776761", fontSize: 14, lineHeight: 21, marginTop: 3 },
+  species: { color: colors.violetDark, fontSize: 13, fontWeight: "800", textTransform: "uppercase" },
+  meta: { color: colors.textSecondary, fontSize: 13 },
+  name: { color: colors.text, fontSize: 23, fontWeight: "900" },
+  location: { color: colors.navyLight, fontSize: 14, fontWeight: "600" },
+  description: { color: colors.textSecondary, fontSize: 14, lineHeight: 21, marginTop: 3 },
   footer: {
     alignItems: "center",
-    borderTopColor: "#f0e5dc",
+    borderTopColor: colors.border,
     borderTopWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 5,
     paddingTop: 12,
   },
-  detailsLink: { color: "#a6533d", fontSize: 15, fontWeight: "800" },
-  arrow: { color: "#a6533d", fontSize: 24, lineHeight: 24 },
+  detailsLink: { color: colors.violetDark, fontSize: 15, fontWeight: "800" },
+  arrow: { color: colors.violetDark, fontSize: 24, lineHeight: 24 },
   pressed: { opacity: 0.88 },
 });

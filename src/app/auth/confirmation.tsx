@@ -1,5 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "@/theme/colors";
 
 export default function EmailConfirmationScreen() {
   const { email } = useLocalSearchParams<{ email?: string }>();
@@ -21,9 +22,8 @@ export default function EmailConfirmationScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 18, justifyContent: "center", padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
-  message: { color: "#604b45", fontSize: 16, lineHeight: 24 },
-  note: { color: "#776761", lineHeight: 22 },
-  link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
+  title: { color: colors.navy, fontSize: 27, fontWeight: "900" },
+  message: { color: colors.textSecondary, fontSize: 16, lineHeight: 24 },
+  note: { color: colors.textSecondary, lineHeight: 22 },
+  link: { color: colors.violetDark, fontWeight: "700", textAlign: "center" },
 });
-

@@ -1,4 +1,5 @@
 ﻿import { Pressable, StyleSheet, Text } from "react-native";
+import { colors } from "@/theme/colors";
 
 type PrimaryButtonProps = {
   title: string;
@@ -41,11 +42,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: "100%",
   },
-  primary: { backgroundColor: "#b85c38", borderColor: "#b85c38", shadowColor: "#3f2d2a", shadowOffset: { height: 3, width: 0 }, shadowOpacity: 0.14, shadowRadius: 5, elevation: 2 },
-  secondary: { backgroundColor: "#e6f3eb", borderColor: "#b8dcc8" },
+  primary: { backgroundColor: colors.violet, borderColor: colors.violet, shadowColor: colors.navy, shadowOffset: { height: 3, width: 0 }, shadowOpacity: 0.16, shadowRadius: 7, elevation: 3 },
+  secondary: { backgroundColor: colors.lilac, borderColor: "#CFC6FF" },
   label: { color: "#fff", fontSize: 16, fontWeight: "800" },
-  secondaryLabel: { color: "#31705b" },
+  secondaryLabel: { color: colors.violetDark },
   disabled: { opacity: 0.5 },
   pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },
 });
-

@@ -8,6 +8,7 @@ import { HeaderAccountButton } from "@/components/HeaderAccountButton";
 import { BrandHeaderLogo } from "@/components/BrandHeaderLogo";
 import { AuthProvider, useAuth } from "@/features/auth/AuthProvider";
 import { getProfileHomeRoute, getRoleRedirect } from "@/features/auth/role-navigation";
+import { colors } from "@/theme/colors";
 
 export default function RootLayout() {
   const [queryClient] = useState(
@@ -44,7 +45,7 @@ function RootNavigator() {
   if (auth.loading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator color="#b85c38" />
+        <ActivityIndicator color={colors.violet} />
         <Text style={styles.loadingText}>Verificando sua sessão...</Text>
       </View>
     );
@@ -53,7 +54,7 @@ function RootNavigator() {
   if (auth.session && auth.profileLoading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator color="#b85c38" />
+        <ActivityIndicator color={colors.violet} />
         <Text style={styles.loadingText}>Carregando seu perfil...</Text>
       </View>
     );
@@ -80,11 +81,11 @@ function RootNavigator() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: "#fff8f0" },
-        headerTintColor: "#b85c38",
+        headerStyle: { backgroundColor: colors.surface },
+        headerTintColor: colors.navy,
         headerTitleStyle: { fontWeight: "700" },
         headerRight: () => <HeaderHomeButton />,
-        contentStyle: { backgroundColor: "#fff8f0" },
+        contentStyle: { backgroundColor: colors.canvas },
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -92,7 +93,7 @@ function RootNavigator() {
         name="animals/index"
         options={{ title: "Animais para adoção", headerBackVisible: false, headerLeft: () => null, headerRight: () => <HeaderAccountButton />, gestureEnabled: false }}
       />
-      <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal" }} />
+      <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal", headerRight: () => null }} />
       <Stack.Screen
         name="animals/manage"
         options={{ title: "", headerTitle: "", headerBackVisible: false, headerLeft: () => <BrandHeaderLogo />, headerRight: () => <HeaderAccountButton />, gestureEnabled: false }}
@@ -108,6 +109,6 @@ function RootNavigator() {
 }
 
 const styles = StyleSheet.create({
-  loading: { alignItems: "center", backgroundColor: "#fff8f0", flex: 1, gap: 12, justifyContent: "center" },
-  loadingText: { color: "#604b45", fontSize: 15 },
+  loading: { alignItems: "center", backgroundColor: colors.canvas, flex: 1, gap: 12, justifyContent: "center" },
+  loadingText: { color: colors.textSecondary, fontSize: 15 },
 });

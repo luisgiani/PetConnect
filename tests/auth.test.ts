@@ -35,6 +35,11 @@ describe("validação de perfil e cadastro", () => {
       expect(getAuthErrorMessage(new Error("Invalid login credentials"), "Falha ao entrar."))
         .toBe("E-mail ou senha incorretos. Confira seus dados e tente novamente.");
     });
+
+    it("informa quando o e-mail já está cadastrado", () => {
+      expect(getAuthErrorMessage(new Error("User already registered"), "Falha ao criar conta."))
+        .toBe("Este e-mail já está cadastrado. Entre na sua conta ou use a opção de recuperar senha.");
+    });
   });
 
   it("rejeita números em nome e UF inválida", () => {
