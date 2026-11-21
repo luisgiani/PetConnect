@@ -38,8 +38,8 @@ export default function AuthCallbackScreen() {
       if (auth.loading) return;
       processed.current = true;
       if (auth.session) {
-        setMessage("E-mail confirmado. Abrindo sua conta...");
-        router.replace("/account");
+        setMessage("E-mail confirmado. Abrindo os animais disponíveis...");
+        router.replace("/animals");
       } else {
         setError("Não foi possível obter uma sessão. Tente entrar com seu e-mail e senha.");
         setMessage("A confirmação terminou sem iniciar uma sessão.");
@@ -57,8 +57,8 @@ export default function AuthCallbackScreen() {
         } else {
           throw new Error("O link de confirmação está incompleto ou expirou.");
         }
-        setMessage("E-mail confirmado. Abrindo seu perfil...");
-        router.replace("/account");
+        setMessage("E-mail confirmado. Abrindo os animais disponíveis...");
+        router.replace("/animals");
       } catch (callbackError) {
         setError(callbackError instanceof Error ? callbackError.message : "Não foi possível confirmar o e-mail.");
         setMessage("Não foi possível confirmar o e-mail.");
@@ -83,4 +83,3 @@ const styles = StyleSheet.create({
   title: { color: "#b85c38", fontSize: 23, fontWeight: "800" },
   error: { color: "#b3261e", lineHeight: 22 },
 });
-

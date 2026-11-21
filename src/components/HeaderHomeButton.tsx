@@ -1,16 +1,19 @@
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text } from "react-native";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export function HeaderHomeButton() {
+  const { profile } = useAuth();
+  const isDonor = profile?.profileType === "doador_ong";
   return (
     <Pressable
-      accessibilityLabel="Voltar para a tela inicial"
+      accessibilityLabel={isDonor ? "Voltar para meus anúncios" : "Voltar para os animais"}
       accessibilityRole="button"
       hitSlop={8}
-      onPress={() => router.replace("/")}
+      onPress={() => router.replace(isDonor ? "/animals/manage" : "/animals")}
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
     >
-      <Text style={styles.label}>Início</Text>
+      <Text style={styles.label}>{isDonor ? "Meus anúncios" : "Animais"}</Text>
     </Pressable>
   );
 }
@@ -20,4 +23,3 @@ const styles = StyleSheet.create({
   label: { color: "#b85c38", fontSize: 14, fontWeight: "700" },
   pressed: { opacity: 0.7 },
 });
-

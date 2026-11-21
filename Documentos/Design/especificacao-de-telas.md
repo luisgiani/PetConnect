@@ -7,23 +7,33 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - O mesmo fluxo funcional deve atender Android e Web responsiva.
 - Usar navegação adequada a cada formato sem acrescentar funcionalidades exclusivas fora do escopo.
 - Não incluir Chat, Meus Chats, Meus Interesses ou ações de favoritar/salvar.
-- A lista e os detalhes dos animais são públicos; o nome e telefone do responsável só são exibidos com sessão autenticada.
+- Login é obrigatório para acessar a área principal, a lista e os detalhes dos animais. Sem sessão, encaminhar para entrar ou criar conta.
+- Login, cadastro e confirmação de e-mail permanecem acessíveis sem sessão.
+- Após autenticar, abrir a tela principal correspondente ao perfil; não exibir controles de voltar ou Início nela.
 - Exibir estados claros de carregamento, vazio, erro, validação e sucesso.
 
 ## Telas
 
-### 1. Início
+### Acesso principal por perfil
+
+- **Adotante:** após autenticar, abre a lista de animais. Não mostrar ações ou rotas de cadastro e gerenciamento de anúncios.
+- **Doador/ONG:** após autenticar, abre **Meus anúncios**; mostrar somente anúncios próprios. Sem anúncios, apresentar a ação para cadastrar o primeiro. Não abrir a lista geral de adoção.
+- Ambos os perfis podem acessar **Minha conta** pelo cabeçalho.
+
+### 1. Entrada no app
 
 - Apresentar a marca e o propósito do PetConnect.
-- Ações principais: **Buscar animais**, **Entrar** e **Criar conta**.
-- Publicação sem sessão deve encaminhar para autenticação.
+- Sem sessão, encaminhar para login ou cadastro.
+- Após autenticar, direcionar para a tela principal correspondente ao perfil.
 
 ### 2. Lista de animais
 
 - Mostrar somente anúncios disponíveis.
 - Filtrar por espécie, porte, cidade e estado.
 - Quando a pessoa estiver autenticada e tiver cidade/UF no perfil, ordenar primeiro anúncios da mesma cidade, depois anúncios da mesma UF; sem localização, manter a lista completa na ordem padrão.
-- Cada card mostra somente as informações do animal: foto principal, nome, espécie, idade, porte e localização. O contato do responsável não aparece nesta tela.
+- Apresentar os anúncios em feed vertical, priorizando uma foto grande. Abaixo da foto, mostrar espécie, nome, idade, porte, localização e uma prévia da descrição, com acesso aos detalhes.
+- Se houver mais fotos, indicar a quantidade no card; a galeria completa permanece nos detalhes do anúncio.
+- Cada card mostra somente as informações do animal. O contato do responsável não aparece nesta tela.
 - Incluir estados de carregamento, lista vazia e erro com ação de tentar novamente.
 
 ### 3. Detalhes do animal
@@ -73,6 +83,6 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 
 ## Fluxos
 
-**Adotante:** Início → Lista e filtros → Detalhes → Entrar/criar conta para ver o contato → telefone do responsável.
+**Adotante:** Abrir app → Entrar/criar conta → Lista e filtros → Detalhes → telefone/WhatsApp do responsável.
 
 **Doador/ONG:** Criar conta → Confirmar e-mail → Completar perfil → Área do doador/ONG → Cadastrar com ao menos uma foto → Publicar → Editar ou encerrar.

@@ -132,7 +132,7 @@ A autenticação utiliza o **Supabase Auth**, que emite tokens **JWT** nativos e
 
 Como o aplicativo acessa o banco diretamente por meio do Supabase, a proteção real dos dados está no banco. Por isso a segurança **não** é adiada para uma fase posterior:
 
-- **MVP:** Supabase Auth (cadastro e login) e **Row Level Security** ativos desde o início, com leitura pública de animais disponíveis e escrita limitada ao responsável. As permissões também distinguem adotante e doador/ONG.
+- **MVP:** Supabase Auth (cadastro e login obrigatório para acessar o app) e **Row Level Security** ativos desde o início. As rotas de animais, conta e anúncios exigem sessão; visitantes acessam somente login, cadastro e confirmação de e-mail. As permissões também distinguem adotante e doador/ONG.
 - **Evolução:** denúncias e Edge Functions para regras sensíveis, se necessárias.
 
 Exemplos de políticas RLS:

@@ -7,6 +7,7 @@ import { AuthField } from "@/components/AuthField";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { signInSchema, type SignInFormInput } from "@/features/auth/schemas/auth.schema";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { getAuthErrorMessage } from "@/features/auth/auth-error";
 
 export default function LoginScreen() {
   const auth = useAuth();
@@ -29,12 +30,12 @@ export default function LoginScreen() {
         const animalId = returnTo.slice("/animals/".length);
         router.replace(/^[A-Za-z0-9-]+$/.test(animalId)
           ? { pathname: "/animals/[id]", params: { id: animalId } }
-          : "/account");
+          : "/animals");
       } else {
-        router.replace("/account");
+        router.replace("/animals");
       }
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Não foi possível entrar.");
+      setSubmitError(getAuthErrorMessage(error, "Não foi possível entrar."));
     }
   });
 
@@ -80,4 +81,3 @@ const styles = StyleSheet.create({
   footer: { color: "#776761", textAlign: "center" },
   link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
 });
-
