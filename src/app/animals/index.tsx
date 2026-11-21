@@ -1,4 +1,3 @@
-import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { AnimalCard } from "@/components/AnimalCard";
@@ -172,9 +171,6 @@ export default function AnimalsScreen() {
         </View>
       ) : null}
 
-      <Link href="/animals/new" asChild>
-        <PrimaryButton title="＋  Cadastrar animal" variant="secondary" />
-      </Link>
     </ScrollView>
   );
 }
@@ -234,4 +230,3 @@ function FilterChoice({ label, selected, onPress }: { label: string; selected: b
     </Pressable>
   );
 }
-

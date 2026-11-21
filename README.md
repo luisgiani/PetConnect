@@ -1,6 +1,6 @@
 # PetConnect
 
-Base inicial do aplicativo de adoção de animais, construída em TypeScript com React Native e Expo. O MVP tem como alvo Android e Web (incluindo computadores); iOS fica fora da entrega atual.
+Aplicativo de adoção de animais, construído em TypeScript com React Native e Expo. O MVP tem como alvo Android e Web (incluindo computadores); iOS fica fora da entrega atual. O acesso às telas do app exige autenticação.
 
 A documentação foi organizada por assunto. Consulte o [índice de documentos](Documentos/README.md), o [escopo do MVP](Documentos/Produto/escopo-mvp.md), a [arquitetura técnica](Documentos/Arquitetura/arquitetura-tecnica.md), a [especificação das telas](Documentos/Design/especificacao-de-telas.md) e o [protótipo de fluxo](Documentos/Design/fluxo-mvp.svg).
 

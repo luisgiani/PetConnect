@@ -35,7 +35,7 @@ export default function SignUpScreen() {
       if (needsConfirmation) {
         router.replace({ pathname: "/auth/confirmation", params: { email: input.email } });
       } else {
-        router.replace("/account");
+        router.replace("/animals");
       }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Não foi possível criar a conta.");
@@ -130,4 +130,3 @@ const styles = StyleSheet.create({
   footer: { color: "#776761", textAlign: "center" },
   link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
 });
-

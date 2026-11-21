@@ -45,16 +45,12 @@ export default function ManageAnimalsScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Meus anúncios" }} />
+      <Stack.Screen options={{ title: "" }} />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.heading}>
           <Text style={styles.title}>Meus anúncios</Text>
           <Text style={styles.subtitle}>Gerencie os animais publicados pela sua conta.</Text>
         </View>
-        <Link href="/animals/new" asChild>
-          <PrimaryButton title="＋  Cadastrar animal" variant="secondary" />
-        </Link>
-
         {animalsQuery.isPending ? <StateMessage message="Carregando seus anúncios..." loading /> : null}
         {animalsQuery.error ? (
           <View style={styles.stateContainer}>
@@ -65,13 +61,24 @@ export default function ManageAnimalsScreen() {
         {actionError ? <Text accessibilityRole="alert" style={styles.error}>{actionError}</Text> : null}
         {animalsQuery.data && animals.length === 0 ? (
           <View style={styles.stateContainer}>
-            <StateMessage message="Você ainda não publicou nenhum animal." />
+            <Text style={styles.emptyIcon}>♡</Text>
+            <Text style={styles.emptyTitle}>Sua jornada começa aqui</Text>
+            <StateMessage message="Você ainda não publicou nenhum animal para adoção." />
+            <Link href="/animals/new" asChild>
+              <PrimaryButton title="Cadastrar animal para adoção" />
+            </Link>
           </View>
+        ) : null}
+
+        {animals.length > 0 ? (
+          <Link href="/animals/new" asChild>
+            <PrimaryButton title="＋  Cadastrar animal" variant="secondary" />
+          </Link>
         ) : null}
 
         {animals.map((animal) => (
           <View key={animal.id} style={styles.item}>
-            <AnimalCard animal={animal} />
+            <AnimalCard animal={animal} interactive={false} />
             <View style={styles.statusRow}>
               <Text style={[styles.status, animal.status === "available" ? styles.available : styles.adopted]}>
                 {animal.status === "available" ? "Disponível" : "Adotado"}
@@ -104,5 +111,6 @@ const styles = StyleSheet.create({
   available: { backgroundColor: "#e6f3eb", color: "#31705b" },
   adopted: { backgroundColor: "#ffe8dc", color: "#b85c38" },
   error: { color: "#b3261e", lineHeight: 21 },
+  emptyIcon: { color: "#e98973", fontSize: 44, fontWeight: "700", textAlign: "center" },
+  emptyTitle: { color: "#3f2d2a", fontSize: 21, fontWeight: "800", textAlign: "center" },
 });
-

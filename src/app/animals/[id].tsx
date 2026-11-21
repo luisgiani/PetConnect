@@ -1,13 +1,15 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { DonorContact } from "@/components/DonorContact";
 import { StateMessage } from "@/components/StateMessage";
 import { useAnimal } from "@/features/animals/hooks/useAnimals";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export default function AnimalDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { width } = useWindowDimensions();
+  const auth = useAuth();
   const { data: animal, error, isPending } = useAnimal(id);
   const [photoIndex, setPhotoIndex] = useState(0);
 
@@ -18,6 +20,12 @@ export default function AnimalDetailsScreen() {
   if (isPending) return <StateMessage message="Carregando detalhes..." loading />;
   if (error) return <StateMessage message={`Não foi possível carregar o animal: ${error.message}`} />;
   if (!animal) return <StateMessage message="Animal não encontrado ou indisponível." />;
+  if (auth.profile?.profileType === "doador_ong" && animal.ownerId !== auth.profile.id) {
+    return <Redirect href="/animals/manage" />;
+  }
+  if (auth.profile?.profileType === "adotante" && animal.status !== "available") {
+    return <Redirect href="/animals" />;
+  }
 
   const age = animal.ageMonths < 12
     ? `${animal.ageMonths} ${animal.ageMonths === 1 ? "mês" : "meses"}`
@@ -164,4 +172,3 @@ const styles = StyleSheet.create({
   sectionTitle: { color: "#3f2d2a", fontSize: 19, fontWeight: "700" },
   description: { color: "#776761", fontSize: 16, lineHeight: 25 },
 });
-

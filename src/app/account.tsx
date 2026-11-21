@@ -66,7 +66,7 @@ export default function AccountScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Minha conta" }} />
+      <Stack.Screen options={{ title: "Minha conta", headerRight: () => null }} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {auth.loading || auth.profileLoading ? <Text style={styles.message}>Carregando conta...</Text> : null}
         {!auth.available ? <Text style={styles.message}>A autenticação está disponível quando o app estiver configurado para usar o Supabase.</Text> : null}
@@ -128,9 +128,6 @@ export default function AccountScreen() {
                 }} disabled={isSubmitting} />
               </View>
             )}
-            {auth.profile.profileType === "doador_ong" ? (
-              <Link href="/animals/manage" asChild><PrimaryButton title="Gerenciar meus anúncios" variant="secondary" /></Link>
-            ) : null}
             <PrimaryButton title="Sair da conta" onPress={() => void onSignOut()} />
           </>
         ) : null}
@@ -160,4 +157,3 @@ function formatLocation(city: string | null, state: string | null): string {
   if (city && state) return `${city} - ${state}`;
   return city || state || "Não informada";
 }
-

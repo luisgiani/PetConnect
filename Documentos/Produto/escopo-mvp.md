@@ -17,20 +17,21 @@ Entregar uma aplicação que permita encontrar animais disponíveis para adoçã
 
 | Área | Escopo |
 | --- | --- |
-| Descoberta | Listar animais disponíveis e abrir detalhes sem conta. |
-| Busca | Filtrar por espécie, porte, cidade e estado. |
+| Acesso | Exigir sessão autenticada para entrar na área principal do app e acessar animais, perfil e anúncios. Visitantes podem acessar somente login, cadastro e confirmação de e-mail. |
+| Descoberta | Usuários autenticados podem listar animais disponíveis e abrir detalhes. |
+| Busca | Usuários autenticados podem filtrar por espécie, porte, cidade e estado. |
 | Contas | Cadastro, login, confirmação de e-mail obrigatória, sessão persistente e perfil do tipo adotante ou doador/ONG. As contas de demonstração devem estar confirmadas antes da apresentação. |
 | Publicação | Doador/ONG autenticado pode cadastrar e editar anúncios e marcá-los como adotados/encerrados. |
 | Fotos | Exigir ao menos uma foto e permitir no máximo cinco por anúncio; limite de 5 MB por arquivo antes da compressão; armazenar no Supabase Storage. |
 | Contato | Usuário autenticado pode ver o nome e telefone do responsável somente nos detalhes de anúncios disponíveis; pode iniciar uma chamada ou conversa pelo WhatsApp. |
-| Segurança | RLS no banco: somente o responsável pode administrar seus anúncios; nome e telefone não são expostos a visitantes anônimos nem por consultas públicas de perfil. |
+| Segurança | Rotas principais exigem sessão. RLS no banco: somente o responsável pode administrar seus anúncios; nome e telefone não são expostos por consultas públicas de perfil. |
 
 Os filtros são aplicados à lista de animais disponíveis. Cidade e estado passam a fazer parte dos dados do anúncio e devem ser validados e persistidos.
 
 ## Ordem sugerida das telas
 
-1. **Início:** apresentar o produto e oferecer ações para buscar animais, entrar ou criar conta.
-2. **Lista de animais:** mostrar anúncios disponíveis e filtros por espécie, porte, cidade e estado.
+1. **Acesso:** sem sessão, abrir login; permitir criar conta e confirmar e-mail.
+2. **Lista de animais:** tela principal após autenticação; mostrar anúncios disponíveis e filtros por espécie, porte, cidade e estado.
 3. **Detalhes do animal:** exibir informações e fotos; exibir contato do responsável somente após autenticação.
 4. **Entrar / criar conta:** autenticar adotantes e doadores/ONGs; o cadastro exige confirmação de e-mail.
 5. **Completar perfil:** coletar nome, tipo de perfil e, para doador/ONG, telefone para contato.
@@ -54,33 +55,33 @@ Esses itens só entram em uma etapa posterior se houver decisão explícita de a
 
 ### Adotante
 
-1. Abre o app e consulta a lista pública de animais.
+1. Abre o app e entra ou cria uma conta; após autenticar, consulta a lista de animais.
 2. Pesquisa por espécie, porte e localização.
 3. Abre os detalhes do animal.
-4. Se ainda não estiver autenticado, entra ou cria uma conta do tipo adotante.
-5. Consulta o nome e o telefone do responsável; pode iniciar uma chamada ou tocar em **Conversar pelo WhatsApp**.
+4. Consulta o nome e o telefone do responsável; pode iniciar uma chamada ou tocar em **Conversar pelo WhatsApp**.
+5. Não tem acesso à publicação ou ao gerenciamento de anúncios.
 
 Não há funcionalidade de salvar animais ou consultar uma lista de interesses no MVP.
 
 ### Doador/ONG
 
 1. Cria uma conta e completa o perfil como doador/ONG, incluindo telefone.
-2. Acessa a área de publicação.
-3. Preenche os dados do animal e informa cidade e estado.
-4. Adiciona pelo menos uma foto.
+2. Após autenticar, acessa somente sua área de anúncios; não navega pela lista geral de adoção.
+3. Se ainda não tiver anúncios, a área apresenta a ação para cadastrar o primeiro animal.
+4. Preenche os dados do animal, informa cidade e estado, e adiciona pelo menos uma foto.
 5. Publica o anúncio, podendo depois editá-lo ou marcá-lo como adotado/encerrado.
 
 ## Critérios de aceite do MVP
 
 O MVP só será considerado concluído quando:
 
-1. Uma pessoa sem conta conseguir listar animais disponíveis, filtrar e abrir detalhes na Web e no Android.
-2. Cadastro, login, encerramento de sessão e restauração da sessão funcionarem nas plataformas incluídas.
-3. Uma pessoa anônima conseguir navegar sem ver dados de contato; uma conta autenticada conseguir ver nome e telefone nos anúncios disponíveis e iniciar uma chamada ou conversa pelo WhatsApp, sem leitura pública da tabela de perfis.
+1. Uma pessoa sem sessão ser encaminhada ao login e uma pessoa autenticada conseguir listar animais, filtrar e abrir detalhes na Web e no Android.
+2. Cadastro, login, encerramento de sessão, restauração da sessão e proteção de rotas funcionarem nas plataformas incluídas.
+3. Uma conta autenticada conseguir ver nome e telefone nos anúncios disponíveis e iniciar uma chamada ou conversa pelo WhatsApp, sem leitura direta de perfis de outras pessoas.
 4. Uma conta do tipo doador/ONG conseguir publicar um anúncio com os campos obrigatórios e pelo menos uma foto.
 5. Um anúncio aceitar no máximo cinco imagens, rejeitar arquivos acima de 5 MB antes da compressão e exigir ao menos uma imagem para publicação.
 6. O responsável conseguir editar e encerrar seu anúncio; outra conta não conseguir alterá-lo, mesmo tentando acessar diretamente o Supabase.
-7. Anúncios encerrados não aparecerem na listagem pública de animais disponíveis.
+7. Anúncios encerrados não aparecerem na listagem de animais disponíveis.
 8. O cadastro exigir confirmação de e-mail, e as contas de demonstração estarem confirmadas antes da apresentação.
 9. Erros, carregamento, lista vazia, formulário inválido e falhas de upload apresentarem estados compreensíveis.
 10. As migrations e políticas RLS necessárias estiverem versionadas e testadas com sessão anônima e autenticada.

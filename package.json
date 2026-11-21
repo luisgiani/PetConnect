@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run tests/auth.test.ts tests/animals.test.ts",
+    "test": "vitest run tests/auth.test.ts tests/animals.test.ts tests/role-navigation.test.ts",
     "test:rls": "vitest run tests/supabase-rls.test.ts"
   },
   "dependencies": {

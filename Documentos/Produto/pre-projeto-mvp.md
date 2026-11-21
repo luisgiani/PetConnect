@@ -18,7 +18,7 @@ Desenvolver o PetConnect para Android e Web, centralizando a divulgação de ani
 
 - Implementar cadastro e autenticação de usuários, com confirmação de e-mail e perfis de adotante e doador/ONG.
 - Permitir que doadores/ONGs publiquem, editem e encerrem anúncios com espécie, idade, raça, porte, saúde, descrição, cidade e estado.
-- Disponibilizar uma lista pública de animais com filtros por espécie, porte, cidade e estado.
+- Disponibilizar uma lista autenticada de animais com filtros por espécie, porte, cidade e estado.
 - Permitir uma a cinco fotos por anúncio, com limite de 5 MB por arquivo antes da compressão, exigindo ao menos uma foto para publicar.
 - Permitir que usuários autenticados consultem nome e telefone do responsável por anúncios disponíveis e iniciem uma chamada, sem expor esses dados na navegação pública.
 - Desenvolver uma interface responsiva e acessível para Android e Web, com validações, estados de erro claros e controle de acesso por RLS.
@@ -31,7 +31,7 @@ Muitas pessoas querem adotar ou doar animais, mas encontram dificuldades para lo
 
 O PetConnect será desenvolvido para Android e Web, utilizando tecnologias gratuitas ou com plano gratuito adequado ao desenvolvimento e à demonstração acadêmica.
 
-Inicialmente, será realizada pesquisa bibliográfica e análise de aplicações existentes voltadas à adoção de animais. Em seguida, serão definidos os requisitos e critérios de aceite do MVP: navegação pública, busca por animais, contas de adotante e doador/ONG, confirmação de e-mail, anúncios com fotos, localização e contato telefônico autenticado com proteção dos dados do responsável.
+Inicialmente, será realizada pesquisa bibliográfica e análise de aplicações existentes voltadas à adoção de animais. Em seguida, serão definidos os requisitos e critérios de aceite do MVP: autenticação obrigatória para acesso ao app, busca por animais, contas de adotante e doador/ONG, confirmação de e-mail, anúncios com fotos, localização e contato telefônico autenticado com proteção dos dados do responsável.
 
 Na etapa de modelagem, serão definidos os fluxos de usuário, as telas, o modelo de dados e as regras de acesso. O protótipo contemplará Android e Web responsiva. Chat interno e lista de interesses ficam fora desta entrega.
 

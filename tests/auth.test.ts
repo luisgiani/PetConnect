@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { formatBrazilPhone, onlyLetters, onlyLettersAndSpaces, phoneDigits } from "@/features/auth/profile.formatters";
 import { profileSchema } from "@/features/auth/schemas/profile.schema";
 import { signUpSchema } from "@/features/auth/schemas/auth.schema";
+import { getAuthErrorMessage } from "@/features/auth/auth-error";
 
 describe("formatadores de perfil", () => {
   it("formata celulares e telefones fixos brasileiros", () => {
@@ -27,6 +28,13 @@ describe("validação de perfil e cadastro", () => {
 
   it("aceita perfil com telefone celular válido", () => {
     expect(profileSchema.safeParse(validProfile).success).toBe(true);
+  });
+
+  describe("mensagens de autenticação", () => {
+    it("traduz credenciais inválidas para português", () => {
+      expect(getAuthErrorMessage(new Error("Invalid login credentials"), "Falha ao entrar."))
+        .toBe("E-mail ou senha incorretos. Confira seus dados e tente novamente.");
+    });
   });
 
   it("rejeita números em nome e UF inválida", () => {

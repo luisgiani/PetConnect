@@ -50,7 +50,13 @@ Pré-requisitos: Git, Node.js LTS e npm. Para executar no celular, instale Expo 
 `EXPO_PUBLIC_DATA_SOURCE` seleciona a origem dos anúncios quando o app inicia:
 
 - `demo`: usa registros mantidos em memória por `DemoAnimalRepository`. Não precisa de credenciais; alterações feitas durante a execução desaparecem ao reiniciar.
-- `supabase`: usa o cliente configurado em `src/lib/supabase/client.ts` e as tabelas do projeto apontado pelas variáveis locais. A lista pública consulta anúncios com `status = 'available'`.
+- `supabase`: usa o cliente configurado em `src/lib/supabase/client.ts` e as tabelas do projeto apontado pelas variáveis locais. A lista, acessível após autenticação, consulta anúncios com `status = 'available'`.
+
+O acesso às telas principais requer sessão autenticada. Sem sessão, a navegação redireciona para `/auth/login`; login, cadastro, confirmação e callback de e-mail são as únicas rotas públicas. Após autenticar, a rota principal depende do perfil.
+
+A navegação autenticada também depende de `profile_type`: adotantes usam `/animals` e não podem abrir `/animals/new` ou `/animals/manage`; doadores/ONGs são encaminhados para `/animals/manage`, que lista apenas anúncios próprios e oferece o cadastro inicial quando a lista está vazia. A rota de detalhes da adoção não fica disponível para perfis doadores; os cards da área de gerenciamento são apenas informativos. O cabeçalho das duas telas principais oferece acesso a **Minha conta**, sem botão Início/voltar.
+
+A navegação autenticada também depende de `profile_type`: adotantes usam `/animals` e não podem abrir `/animals/new` ou `/animals/manage`; doadores/ONGs são encaminhados para `/animals/manage`, que lista apenas anúncios próprios e oferece o cadastro inicial quando a lista está vazia. A rota de detalhes da adoção não fica disponível para perfis doadores; os cards da área de gerenciamento são apenas informativos. O cabeçalho das duas telas principais oferece acesso a **Minha conta**, sem botão Início/voltar.
 
 O Supabase configurado no `.env` é o ambiente real para esse clone. Não execute `db reset`, não remova tabelas e não rode migrations novamente sem confirmar o estado remoto. Para validar leitura, use uma linha de teste identificável e remova apenas essa linha depois, se desejado.
 
