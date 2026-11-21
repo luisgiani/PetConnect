@@ -5,6 +5,7 @@ import { DonorContact } from "@/components/DonorContact";
 import { StateMessage } from "@/components/StateMessage";
 import { useAnimal } from "@/features/animals/hooks/useAnimals";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { colors } from "@/theme/colors";
 
 export default function AnimalDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -145,9 +146,9 @@ function Chevron({ direction }: { direction: "previous" | "next" }) {
 
 const styles = StyleSheet.create({
   container: { gap: 18, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
-  photoGallery: { alignSelf: "center", backgroundColor: "#ffead8", borderRadius: 20, overflow: "hidden", position: "relative" },
-  hero: { backgroundColor: "#ffead8", height: "100%", width: "100%" },
-  arrowButton: { alignItems: "center", backgroundColor: "rgba(48, 40, 58, 0.78)", borderColor: "rgba(255, 255, 255, 0.8)", borderRadius: 24, borderWidth: 1, height: 48, justifyContent: "center", position: "absolute", top: "50%", transform: [{ translateY: -24 }], width: 48 },
+  photoGallery: { alignSelf: "center", backgroundColor: colors.lilac, borderRadius: 20, overflow: "hidden", position: "relative" },
+  hero: { backgroundColor: colors.lilac, height: "100%", width: "100%" },
+  arrowButton: { alignItems: "center", backgroundColor: "rgba(18, 29, 58, 0.78)", borderColor: "rgba(255, 255, 255, 0.8)", borderRadius: 24, borderWidth: 1, height: 48, justifyContent: "center", position: "absolute", top: "50%", transform: [{ translateY: -24 }], width: 48 },
   previousButton: { left: 12 },
   nextButton: { right: 12 },
   chevron: { height: 18, justifyContent: "center", position: "relative", width: 12 },
@@ -155,20 +156,20 @@ const styles = StyleSheet.create({
   chevronArm: { backgroundColor: "#fff", borderRadius: 1, height: 2, position: "absolute", right: 0, width: 10 },
   chevronTop: { top: 4, transform: [{ rotate: "45deg" }] },
   chevronBottom: { bottom: 4, transform: [{ rotate: "-45deg" }] },
-  photoCounter: { alignSelf: "center", backgroundColor: "rgba(48, 40, 58, 0.72)", borderRadius: 14, bottom: 12, paddingHorizontal: 12, paddingVertical: 5, position: "absolute" },
+  photoCounter: { alignSelf: "center", backgroundColor: "rgba(18, 29, 58, 0.72)", borderRadius: 14, bottom: 12, paddingHorizontal: 12, paddingVertical: 5, position: "absolute" },
   photoCounterText: { color: "#fff", fontSize: 13, fontWeight: "700" },
-  heroPlaceholder: { alignItems: "center", alignSelf: "center", backgroundColor: "#ffead8", borderRadius: 20, justifyContent: "center" },
+  heroPlaceholder: { alignItems: "center", alignSelf: "center", backgroundColor: colors.lilac, borderRadius: 20, justifyContent: "center" },
   emoji: { fontSize: 112 },
   heading: { gap: 8 },
-  name: { color: "#3f2d2a", fontSize: 30, fontWeight: "800" },
-  locationBadge: { alignItems: "center", alignSelf: "flex-start", backgroundColor: "#ffe8dc", borderRadius: 16, flexDirection: "row", gap: 6, paddingHorizontal: 12, paddingVertical: 7 },
-  locationIcon: { color: "#b85c38", fontSize: 16, fontWeight: "700" },
-  locationText: { color: "#b85c38", fontSize: 14, fontWeight: "600" },
+  name: { color: colors.navy, fontSize: 30, fontWeight: "900" },
+  locationBadge: { alignItems: "center", alignSelf: "flex-start", backgroundColor: colors.lilac, borderRadius: 16, flexDirection: "row", gap: 6, paddingHorizontal: 12, paddingVertical: 7 },
+  locationIcon: { color: colors.violetDark, fontSize: 16, fontWeight: "700" },
+  locationText: { color: colors.violetDark, fontSize: 14, fontWeight: "600" },
   facts: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  fact: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 12, borderWidth: 1, flexBasis: "48%", flexGrow: 1, gap: 5, minWidth: 120, padding: 14 },
-  factLabel: { color: "#88756d", fontSize: 13 },
-  factValue: { color: "#3f2d2a", fontSize: 16, fontWeight: "700" },
-  descriptionCard: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 14, borderWidth: 1, gap: 10, padding: 16 },
-  sectionTitle: { color: "#3f2d2a", fontSize: 19, fontWeight: "700" },
-  description: { color: "#776761", fontSize: 16, lineHeight: 25 },
+  fact: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 12, borderWidth: 1, flexBasis: "48%", flexGrow: 1, gap: 5, minWidth: 120, padding: 14 },
+  factLabel: { color: colors.textSecondary, fontSize: 13 },
+  factValue: { color: colors.text, fontSize: 16, fontWeight: "700" },
+  descriptionCard: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 14, borderWidth: 1, gap: 10, padding: 16 },
+  sectionTitle: { color: colors.navy, fontSize: 19, fontWeight: "800" },
+  description: { color: colors.textSecondary, fontSize: 16, lineHeight: 25 },
 });

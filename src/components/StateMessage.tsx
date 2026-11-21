@@ -1,4 +1,5 @@
 ﻿import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { colors } from "@/theme/colors";
 
 type StateMessageProps = {
   message: string;
@@ -8,7 +9,7 @@ type StateMessageProps = {
 export function StateMessage({ message, loading = false }: StateMessageProps) {
   return (
     <View accessibilityLiveRegion="polite" style={styles.container}>
-      {loading ? <ActivityIndicator color="#a6533d" /> : null}
+      {loading ? <ActivityIndicator color={colors.violet} /> : null}
       <Text style={styles.message}>{message}</Text>
     </View>
   );
@@ -16,6 +17,5 @@ export function StateMessage({ message, loading = false }: StateMessageProps) {
 
 const styles = StyleSheet.create({
   container: { alignItems: "center", gap: 12, padding: 24 },
-  message: { color: "#776761", fontSize: 16, textAlign: "center" },
+  message: { color: colors.textSecondary, fontSize: 16, textAlign: "center" },
 });
-

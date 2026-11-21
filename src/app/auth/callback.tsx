@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { colors } from "@/theme/colors";
 
 const emailOtpTypes: readonly string[] = ["signup", "email"];
 
@@ -80,6 +81,6 @@ export default function AuthCallbackScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 18, justifyContent: "center", padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#b85c38", fontSize: 23, fontWeight: "800" },
-  error: { color: "#b3261e", lineHeight: 22 },
+  title: { color: colors.navy, fontSize: 23, fontWeight: "900" },
+  error: { color: colors.danger, lineHeight: 22 },
 });

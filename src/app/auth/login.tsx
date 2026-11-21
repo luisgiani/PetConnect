@@ -8,6 +8,8 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { signInSchema, type SignInFormInput } from "@/features/auth/schemas/auth.schema";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { getAuthErrorMessage } from "@/features/auth/auth-error";
+import { colors } from "@/theme/colors";
+import { BrandLockup } from "@/components/BrandLockup";
 
 export default function LoginScreen() {
   const auth = useAuth();
@@ -43,6 +45,7 @@ export default function LoginScreen() {
     <>
       <Stack.Screen options={{ title: "Entrar" }} />
       <View style={styles.container}>
+        <BrandLockup />
         <Text style={styles.title}>Bem-vindo de volta</Text>
         {!auth.available ? (
           <Text accessibilityRole="alert" style={styles.notice}>
@@ -75,9 +78,9 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 18, justifyContent: "center", padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
-  notice: { color: "#7a5100", backgroundColor: "#fff2cc", borderRadius: 10, lineHeight: 21, padding: 12 },
-  error: { color: "#b3261e", lineHeight: 21 },
-  footer: { color: "#776761", textAlign: "center" },
-  link: { color: "#b85c38", fontWeight: "700", textAlign: "center" },
+  title: { color: colors.navy, fontSize: 27, fontWeight: "900" },
+  notice: { color: colors.warningText, backgroundColor: colors.warningSurface, borderRadius: 10, lineHeight: 21, padding: 12 },
+  error: { color: colors.danger, lineHeight: 21 },
+  footer: { color: colors.textSecondary, textAlign: "center" },
+  link: { color: colors.violetDark, fontWeight: "700", textAlign: "center" },
 });

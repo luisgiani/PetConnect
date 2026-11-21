@@ -8,6 +8,7 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { formatBrazilPhone, onlyLetters, onlyLettersAndSpaces, phoneDigits } from "@/features/auth/profile.formatters";
 import { profileSchema, type ProfileFormInput } from "@/features/auth/schemas/profile.schema";
+import { colors } from "@/theme/colors";
 
 export default function AccountScreen() {
   const auth = useAuth();
@@ -140,17 +141,17 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   container: { gap: 16, padding: 24, width: "100%", maxWidth: 560, alignSelf: "center" },
-  title: { color: "#b85c38", fontSize: 27, fontWeight: "800" },
-  message: { color: "#604b45", fontSize: 16, lineHeight: 23 },
-  formCard: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 14, padding: 16 },
-  profileCard: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 16, borderWidth: 1, gap: 10, padding: 16 },
-  sectionTitle: { color: "#3f2d2a", fontSize: 20, fontWeight: "800" },
-  profileValue: { color: "#604b45", fontSize: 15, lineHeight: 22 },
+  title: { color: colors.navy, fontSize: 27, fontWeight: "900" },
+  message: { color: colors.textSecondary, fontSize: 16, lineHeight: 23 },
+  formCard: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, gap: 14, padding: 16 },
+  profileCard: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, gap: 10, padding: 16 },
+  sectionTitle: { color: colors.navy, fontSize: 20, fontWeight: "800" },
+  profileValue: { color: colors.textSecondary, fontSize: 15, lineHeight: 22 },
   locationRow: { flexDirection: "row", gap: 10 },
   cityField: { flex: 1 },
   stateField: { width: 84 },
-  success: { color: "#31705b", lineHeight: 22 },
-  error: { color: "#b3261e", lineHeight: 22 },
+  success: { color: colors.success, lineHeight: 22 },
+  error: { color: colors.danger, lineHeight: 22 },
 });
 
 function formatLocation(city: string | null, state: string | null): string {

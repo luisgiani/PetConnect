@@ -6,6 +6,7 @@ import { StateMessage } from "@/components/StateMessage";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { useAnimals } from "@/features/animals/hooks/useAnimals";
 import type { AnimalFilters, AnimalSize, AnimalSpecies } from "@/features/animals/types";
+import { colors } from "@/theme/colors";
 
 const speciesOptions: { value: AnimalSpecies; label: string }[] = [
   { value: "cachorro", label: "Cachorro" },
@@ -176,37 +177,37 @@ export default function AnimalsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#fff8f0", gap: 14, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
+  container: { backgroundColor: colors.canvas, gap: 14, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
   heading: { gap: 6, marginBottom: 4 },
-  kicker: { color: "#e98973", fontSize: 11, fontWeight: "800", letterSpacing: 1.5 },
-  title: { color: "#3f2d2a", fontSize: 28, fontWeight: "900", letterSpacing: -0.5 },
-  subtitle: { color: "#88756d", fontSize: 15, lineHeight: 22 },
-  regionalNote: { color: "#31705b", fontSize: 13, fontWeight: "700", marginTop: 4 },
-  quickBar: { alignItems: "center", backgroundColor: "#fff0e8", borderRadius: 18, flexDirection: "row", justifyContent: "space-between", padding: 15 },
-  quickLabel: { color: "#3f2d2a", fontSize: 16, fontWeight: "800" },
-  quickHint: { color: "#a6533d", fontSize: 13, marginTop: 3 },
-  filterButton: { backgroundColor: "#b85c38", borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10 },
+  kicker: { color: colors.pink, fontSize: 11, fontWeight: "800", letterSpacing: 1.5 },
+  title: { color: colors.navy, fontSize: 28, fontWeight: "900", letterSpacing: -0.5 },
+  subtitle: { color: colors.textSecondary, fontSize: 15, lineHeight: 22 },
+  regionalNote: { color: colors.success, fontSize: 13, fontWeight: "700", marginTop: 4 },
+  quickBar: { alignItems: "center", backgroundColor: colors.lilac, borderColor: "#DED7FF", borderRadius: 18, borderWidth: 1, flexDirection: "row", justifyContent: "space-between", padding: 15 },
+  quickLabel: { color: colors.navy, fontSize: 16, fontWeight: "800" },
+  quickHint: { color: colors.violetDark, fontSize: 13, marginTop: 3 },
+  filterButton: { backgroundColor: colors.violet, borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10 },
   filterButtonText: { color: "#fff", fontSize: 14, fontWeight: "800" },
   quickChoiceRow: { flexDirection: "row" },
-  filters: { backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 20, borderWidth: 1, gap: 12, padding: 17, shadowColor: "#604b45", shadowOpacity: 0.06, shadowRadius: 10 },
+  filters: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, gap: 12, padding: 17, shadowColor: colors.navy, shadowOpacity: 0.06, shadowRadius: 10 },
   filterHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
-  filterTitle: { color: "#3f2d2a", fontSize: 18, fontWeight: "700" },
-  filterHint: { color: "#88756d", fontSize: 13, marginTop: 3 },
-  clearText: { color: "#b85c38", fontSize: 14, fontWeight: "600", padding: 8 },
-  filterLabel: { color: "#604b45", fontSize: 14, fontWeight: "600" },
+  filterTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
+  filterHint: { color: colors.textSecondary, fontSize: 13, marginTop: 3 },
+  clearText: { color: colors.violetDark, fontSize: 14, fontWeight: "700", padding: 8 },
+  filterLabel: { color: colors.navyLight, fontSize: 14, fontWeight: "600" },
   choices: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  choice: { backgroundColor: "#fff8f0", borderColor: "#ead8cd", borderRadius: 18, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 8 },
-  choiceSelected: { backgroundColor: "#ffe8dc", borderColor: "#e8a18e" },
-  choiceText: { color: "#776761", fontSize: 14 },
-  choiceTextSelected: { color: "#b85c38", fontWeight: "700" },
+  choice: { backgroundColor: colors.canvas, borderColor: colors.border, borderRadius: 18, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 8 },
+  choiceSelected: { backgroundColor: colors.lilac, borderColor: "#BFB3FF" },
+  choiceText: { color: colors.textSecondary, fontSize: 14 },
+  choiceTextSelected: { color: colors.violetDark, fontWeight: "700" },
   locationFilters: { flexDirection: "row", gap: 10 },
   cityInput: { flex: 1 },
   stateInput: { width: 84 },
-  input: { backgroundColor: "#fff8f0", borderColor: "#ead8cd", borderRadius: 10, borderWidth: 1, color: "#3f2d2a", height: 44, marginTop: 6, paddingHorizontal: 12 },
+  input: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 10, borderWidth: 1, color: colors.text, height: 44, marginTop: 6, paddingHorizontal: 12 },
   list: { gap: 12 },
-  emptyState: { alignItems: "center", backgroundColor: "#fff", borderColor: "#ead8cd", borderRadius: 20, borderWidth: 1, gap: 8, padding: 22 },
-  emptyIcon: { color: "#e98973", fontSize: 34, fontWeight: "800" },
-  emptyHint: { color: "#88756d", fontSize: 14, lineHeight: 20, textAlign: "center" },
+  emptyState: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, gap: 8, padding: 22 },
+  emptyIcon: { color: colors.pink, fontSize: 34, fontWeight: "800" },
+  emptyHint: { color: colors.textSecondary, fontSize: 14, lineHeight: 20, textAlign: "center" },
   pressed: { opacity: 0.8 },
 });
 
