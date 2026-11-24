@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useFavorites } from "@/features/animals/FavoritesProvider";
 import type { Animal } from "@/features/animals/types";
 import { colors } from "@/theme/colors";
@@ -7,13 +8,18 @@ import { colors } from "@/theme/colors";
 type AnimalCardProps = { animal: Animal; interactive?: boolean };
 
 export function AnimalCard({ animal, interactive = true }: AnimalCardProps) {
-  const { width } = useWindowDimensions();
+  const [photoHeight, setPhotoHeight] = useState(320);
   const { isFavorite, isLoading: favoritesLoading, toggleFavorite } = useFavorites();
-  const photoHeight = Math.min(Math.max((width - 40) * 0.92, 280), 560);
   const favorite = isFavorite(animal.id);
   const content = (
     <>
-      <View style={[styles.photoFrame, { height: photoHeight }]}>
+      <View
+        onLayout={({ nativeEvent }) => {
+          const nextHeight = Math.round(Math.min(Math.max(nativeEvent.layout.width * 0.68, 220), 400));
+          setPhotoHeight((current) => current === nextHeight ? current : nextHeight);
+        }}
+        style={[styles.photoFrame, { height: photoHeight }]}
+      >
         {animal.photos[0] ? (
           <Image
             accessibilityLabel={`Foto de ${animal.name}`}

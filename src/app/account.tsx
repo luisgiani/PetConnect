@@ -67,7 +67,7 @@ export default function AccountScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Minha conta", headerRight: () => null }} />
+      <Stack.Screen options={{ title: "Perfil", headerRight: () => null }} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {auth.loading || auth.profileLoading ? <Text style={styles.message}>Carregando conta...</Text> : null}
         {!auth.available ? <Text style={styles.message}>A autenticação está disponível quando o app estiver configurado para usar o Supabase.</Text> : null}
