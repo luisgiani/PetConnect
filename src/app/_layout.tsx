@@ -69,7 +69,7 @@ function RootNavigator() {
   if (auth.session && !auth.profile) {
     return (
       <View style={styles.loading}>
-        <Text style={styles.loadingText}>Não foi possível carregar seu perfil. Acesse Minha conta para ver os detalhes.</Text>
+        <Text style={styles.loadingText}>Não foi possível carregar seu perfil. Tente novamente em instantes.</Text>
       </View>
     );
   }
@@ -97,7 +97,7 @@ function RootNavigator() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen
           name="animals/index"
-          options={{ title: "Animais para adoção", headerBackVisible: false, headerLeft: () => null, headerRight: () => null, gestureEnabled: false }}
+          options={{ headerShown: false, gestureEnabled: false }}
         />
         <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal", headerRight: () => null }} />
         <Stack.Screen
@@ -111,7 +111,7 @@ function RootNavigator() {
         />
         <Stack.Screen
           name="account"
-          options={{ title: "Minha conta", headerBackVisible: false, headerLeft: () => null, headerRight: () => null }}
+          options={{ title: "Perfil", headerBackVisible: false, headerLeft: () => null, headerRight: () => null }}
         />
         <Stack.Screen name="auth/login" options={{ title: "Entrar", headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ title: "Criar conta" }} />

@@ -11,7 +11,7 @@ export default function EmailConfirmationScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Confira sua caixa de entrada</Text>
         <Text style={styles.message}>
-          Enviamos um link de confirmação para {email || "o e-mail informado"}. Abra o link no mesmo dispositivo para ativar sua conta.
+          Enviamos um link de confirmação para {email || "o endereço informado"}. Abra-o para ativar sua conta.
         </Text>
         <Text style={styles.note}>Se não encontrar a mensagem, confira a pasta de spam.</Text>
         <Link href="/auth/login" style={styles.link}>Voltar para entrar</Link>

@@ -95,7 +95,7 @@ export default function NewAnimalScreen() {
         <StateMessage message="Somente perfis de doador/ONG podem publicar animais." />
         {auth.error ? <Text accessibilityRole="alert" style={styles.submitError}>{auth.error}</Text> : null}
         <Link href="/account" asChild>
-          <PrimaryButton title="Ir para minha conta" variant="secondary" />
+          <PrimaryButton title="Ir para o perfil" variant="secondary" />
         </Link>
       </View>
     );
@@ -181,7 +181,7 @@ export default function NewAnimalScreen() {
     <>
       <Stack.Screen options={{ title: isEditing ? "Editar anúncio" : "Cadastrar animal" }} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.intro}>{isEditing ? "Atualize as informações do anúncio." : "Preencha as informações para encontrar um novo lar."}</Text>
+        <Text style={styles.intro}>{isEditing ? "Atualize as informações do anúncio." : "Ajude este animal a encontrar um novo lar."}</Text>
         <Field label="Nome do animal" error={errors.name?.message}>
           <Controller
             control={control}

@@ -49,7 +49,7 @@ export default function SignUpScreen() {
       <Stack.Screen options={{ title: "Criar conta" }} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Criar conta</Text>
-        <Text style={styles.intro}>Você precisará confirmar seu e-mail antes de acessar a conta.</Text>
+        <Text style={styles.intro}>Confirme seu e-mail para ativar a conta.</Text>
         {!auth.available ? (
           <Text accessibilityRole="alert" style={styles.notice}>
             Para habilitar o cadastro, defina EXPO_PUBLIC_DATA_SOURCE=supabase e configure as credenciais no .env.

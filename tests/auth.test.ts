@@ -38,7 +38,7 @@ describe("validação de perfil e cadastro", () => {
 
     it("informa quando o e-mail já está cadastrado", () => {
       expect(getAuthErrorMessage(new Error("User already registered"), "Falha ao criar conta."))
-        .toBe("Este e-mail já está cadastrado. Entre na sua conta ou use a opção de recuperar senha.");
+        .toBe("Este e-mail já está cadastrado. Entre na sua conta.");
     });
   });
 

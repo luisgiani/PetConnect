@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Link } from "expo-router";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AnimalCard } from "@/components/AnimalCard";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { StateMessage } from "@/components/StateMessage";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { useFavorites } from "@/features/animals/FavoritesProvider";
+import { filterAnimalsBySearch } from "@/features/animals/search";
 import { useAnimals } from "@/features/animals/hooks/useAnimals";
 import type { AnimalFilters, AnimalSize, AnimalSpecies } from "@/features/animals/types";
 import { colors } from "@/theme/colors";
@@ -25,14 +28,20 @@ export default function AnimalsScreen() {
   const [draftFilters, setDraftFilters] = useState<AnimalFilters>({});
   const [activeFilters, setActiveFilters] = useState<AnimalFilters>({});
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const { width } = useWindowDimensions();
   const { data, error, isPending, refetch, isRefetching } = useAnimals(activeFilters);
   const { profile } = useAuth();
   const { error: favoritesError } = useFavorites();
+  const isWideLayout = width >= 900;
   const hasActiveFilters = Object.values(activeFilters).some(Boolean);
   const prioritizedData = [...(data ?? [])].sort((first, second) =>
     locationScore(second, profile?.city, profile?.state) - locationScore(first, profile?.city, profile?.state),
   );
+  const filteredData = filterAnimalsBySearch(prioritizedData, searchText);
   const hasRegionalPriority = Boolean(profile?.city || profile?.state) && !activeFilters.city && !activeFilters.state;
+  const showEmptyResults = !isPending && !error && Boolean(data?.length) && filteredData.length === 0;
+  const showNoAnimals = !isPending && !error && data?.length === 0;
 
   function applyFilters() {
     setActiveFilters({
@@ -46,6 +55,11 @@ export default function AnimalsScreen() {
     setDraftFilters({});
     setActiveFilters({});
     setFiltersOpen(false);
+  }
+
+  function clearSearchAndFilters() {
+    setSearchText("");
+    clearFilters();
   }
 
   function applyQuickSpecies(species: AnimalSpecies) {
@@ -67,56 +81,90 @@ export default function AnimalsScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.heading}>
-        <Text style={styles.kicker}>PETCONNECT / ADOÇÃO</Text>
-        <Text style={styles.title}>Encontre seu novo amigo</Text>
-        <Text style={styles.subtitle}>Conheça os animais que estão esperando por um lar.</Text>
-        {hasRegionalPriority ? (
-          <Text style={styles.regionalNote}>Anúncios mais próximos de {profile?.city || profile?.state} aparecem primeiro.</Text>
-        ) : null}
-      </View>
-
-      <View style={styles.quickBar}>
-        <View>
-          <Text style={styles.quickLabel}>Animais disponíveis</Text>
-          <Text style={styles.quickHint}>{hasActiveFilters ? "Filtros aplicados" : "Veja todos os anúncios"}</Text>
+    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.heading}>
+          <Text style={styles.title}>Encontre seu novo amigo</Text>
+          <Text style={styles.subtitle}>Conheça animais que estão à procura de um lar.</Text>
+          {hasRegionalPriority ? (
+            <Text style={styles.regionalNote}>Anúncios mais próximos de {profile?.city || profile?.state} aparecem primeiro.</Text>
+          ) : null}
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ expanded: filtersOpen }}
-          onPress={() => setFiltersOpen((current) => !current)}
-          style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
-        >
-          <Text style={styles.filterButtonText}>{filtersOpen ? "Fechar filtros" : "Filtrar"}</Text>
-        </Pressable>
-      </View>
 
-      <View style={styles.quickChoiceRow}>
-        <FilterChoice label="Todos" selected={!hasActiveFilters} onPress={clearFilters} />
-        <FilterChoice
-          label="Cachorros"
-          selected={activeFilters.species === "cachorro"}
-          onPress={() => applyQuickSpecies("cachorro")}
-        />
-        <FilterChoice
-          label="Gatos"
-          selected={activeFilters.species === "gato"}
-          onPress={() => applyQuickSpecies("gato")}
-        />
-        <FilterChoice
-          label="Perto de mim"
-          selected={isNearbyFilterActive(activeFilters, profile?.city, profile?.state)}
-          disabled={!profile?.city && !profile?.state}
-          onPress={applyNearbyFilter}
-        />
-      </View>
-      {!profile?.city && !profile?.state ? (
-        <Text style={styles.nearbyHint}>Adicione sua cidade ao perfil para filtrar por proximidade.</Text>
-      ) : null}
-      {favoritesError ? <StateMessage message={`Não foi possível salvar/carregar favoritos: ${favoritesError}`} /> : null}
+        <View style={styles.searchBox}>
+          <Text style={styles.searchIcon}>⌕</Text>
+          <TextInput
+            accessibilityLabel="Buscar animais por nome, raça ou cidade"
+            autoCapitalize="none"
+            onChangeText={setSearchText}
+            placeholder="Buscar por nome, raça ou cidade"
+            returnKeyType="search"
+            style={styles.searchInput}
+            value={searchText}
+          />
+          {searchText ? (
+            <Pressable
+              accessibilityLabel="Limpar busca"
+              accessibilityRole="button"
+              onPress={() => setSearchText("")}
+              style={styles.clearSearchButton}
+            >
+              <Text style={styles.clearSearchText}>×</Text>
+            </Pressable>
+          ) : null}
+        </View>
 
-      {filtersOpen ? <View style={styles.filters}>
+        <View style={styles.quickBar}>
+          <View>
+            <Text style={styles.quickLabel}>Animais disponíveis</Text>
+            <Text style={styles.quickHint}>
+              {searchText.trim()
+                ? isPending ? "Buscando..." : `${filteredData.length} ${filteredData.length === 1 ? "resultado" : "resultados"}`
+                : hasActiveFilters ? "Filtros aplicados" : "Veja todos os anúncios"}
+            </Text>
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded: filtersOpen }}
+            onPress={() => setFiltersOpen((current) => !current)}
+            style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.filterButtonText}>{filtersOpen ? "Fechar filtros" : "Filtrar"}</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.quickChoiceRow}>
+          <FilterChoice label="Todos" selected={!hasActiveFilters} onPress={clearFilters} />
+          <FilterChoice
+            label="Cachorros"
+            selected={activeFilters.species === "cachorro"}
+            onPress={() => applyQuickSpecies("cachorro")}
+          />
+          <FilterChoice
+            label="Gatos"
+            selected={activeFilters.species === "gato"}
+            onPress={() => applyQuickSpecies("gato")}
+          />
+          <FilterChoice
+            label="Perto de mim"
+            selected={isNearbyFilterActive(activeFilters, profile?.city, profile?.state)}
+            disabled={!profile?.city && !profile?.state}
+            onPress={applyNearbyFilter}
+          />
+        </View>
+        {!profile?.city && !profile?.state ? (
+          <View style={styles.nearbyPrompt}>
+            <Text style={styles.nearbyHint}>Filtre os anúncios pela sua região.</Text>
+            <Link href="/account" asChild>
+              <Pressable accessibilityRole="link" style={styles.locationLink}>
+                <Text style={styles.locationLinkText}>Adicionar minha cidade</Text>
+              </Pressable>
+            </Link>
+          </View>
+        ) : null}
+        {favoritesError ? <StateMessage message={`Não foi possível acessar seus favoritos: ${favoritesError}`} /> : null}
+
+        {filtersOpen ? <View style={styles.filters}>
         <View style={styles.filterHeader}>
           <View>
             <Text style={styles.filterTitle}>Refine sua busca</Text>
@@ -171,61 +219,75 @@ export default function AnimalsScreen() {
               autoCapitalize="characters"
               maxLength={2}
               onChangeText={(state) => setDraftFilters((current) => ({ ...current, state }))}
-              placeholder="Ex: SP"
+              placeholder="Ex.: SP"
               style={styles.input}
               value={draftFilters.state ?? ""}
             />
           </View>
         </View>
         <PrimaryButton title="Aplicar filtros" onPress={() => { applyFilters(); setFiltersOpen(false); }} />
-      </View> : null}
+        </View> : null}
 
-      {isPending ? <StateMessage message="Carregando animais..." loading /> : null}
-      {error ? (
+        {isPending ? <StateMessage message="Carregando animais..." loading /> : null}
+        {error ? (
         <View>
           <StateMessage message={`Não foi possível carregar os animais: ${error.message}`} />
           <PrimaryButton title="Tentar novamente" onPress={() => void refetch()} disabled={isRefetching} />
         </View>
-      ) : null}
-      {!isPending && !error && data?.length === 0 ? (
+        ) : null}
+        {showNoAnimals || showEmptyResults ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>⌕</Text>
-          <StateMessage message={hasActiveFilters
-            ? "Nenhum animal encontrado com esses filtros."
-            : "Ainda não há animais disponíveis."}
+          <StateMessage
+            message={searchText.trim()
+              ? `Nenhum animal corresponde a "${searchText.trim()}".`
+              : hasActiveFilters ? "Nenhum animal encontrado com esses filtros." : "Ainda não há animais disponíveis."}
           />
-          {hasActiveFilters ? (
+          {hasActiveFilters || searchText.trim() ? (
             <>
-              <Text style={styles.emptyHint}>Tente remover algum filtro ou ampliar a região da busca.</Text>
-              <PrimaryButton title="Ver todos os animais" variant="secondary" onPress={clearFilters} />
+              <Text style={styles.emptyHint}>Remova algum filtro ou tente outros termos de busca.</Text>
+              <PrimaryButton title="Limpar busca e filtros" variant="secondary" onPress={clearSearchAndFilters} />
             </>
           ) : null}
         </View>
-      ) : null}
-      {prioritizedData.length ? (
-        <View style={styles.list}>
-          {prioritizedData.map((animal) => <AnimalCard key={animal.id} animal={animal} />)}
+        ) : null}
+        {filteredData.length ? (
+        <View style={[styles.list, isWideLayout && styles.listGrid]}>
+          {filteredData.map((animal) => (
+            <View key={animal.id} style={isWideLayout ? styles.gridItem : undefined}>
+              <AnimalCard animal={animal} />
+            </View>
+          ))}
         </View>
-      ) : null}
+        ) : null}
 
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: colors.canvas, gap: 14, padding: 20, width: "100%", maxWidth: 760, alignSelf: "center" },
+  safeArea: { backgroundColor: colors.canvas, flex: 1 },
+  container: { backgroundColor: colors.canvas, gap: 14, padding: 20, paddingBottom: 32, width: "100%", maxWidth: 1120, alignSelf: "center" },
   heading: { gap: 6, marginBottom: 4 },
-  kicker: { color: colors.pink, fontSize: 11, fontWeight: "800", letterSpacing: 1.5 },
   title: { color: colors.navy, fontSize: 28, fontWeight: "900", letterSpacing: -0.5 },
   subtitle: { color: colors.textSecondary, fontSize: 15, lineHeight: 22 },
   regionalNote: { color: colors.success, fontSize: 13, fontWeight: "700", marginTop: 4 },
+  searchBox: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 14, borderWidth: 1, flexDirection: "row", minHeight: 48, paddingHorizontal: 13 },
+  searchIcon: { color: colors.violetDark, fontSize: 23, lineHeight: 26, marginRight: 9 },
+  searchInput: { color: colors.text, flex: 1, fontSize: 15, minHeight: 46, paddingVertical: 8 },
+  clearSearchButton: { alignItems: "center", height: 36, justifyContent: "center", width: 36 },
+  clearSearchText: { color: colors.textSecondary, fontSize: 24, lineHeight: 28 },
   quickBar: { alignItems: "center", backgroundColor: colors.lilac, borderColor: "#DED7FF", borderRadius: 18, borderWidth: 1, flexDirection: "row", justifyContent: "space-between", padding: 15 },
   quickLabel: { color: colors.navy, fontSize: 16, fontWeight: "800" },
   quickHint: { color: colors.violetDark, fontSize: 13, marginTop: 3 },
   filterButton: { backgroundColor: colors.violet, borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10 },
   filterButtonText: { color: "#fff", fontSize: 14, fontWeight: "800" },
   quickChoiceRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  nearbyHint: { color: colors.textSecondary, fontSize: 13, marginTop: -8 },
+  nearbyPrompt: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: -8 },
+  nearbyHint: { color: colors.textSecondary, fontSize: 13 },
+  locationLink: { minHeight: 32, justifyContent: "center", paddingHorizontal: 4 },
+  locationLinkText: { color: colors.violetDark, fontSize: 13, fontWeight: "700", textDecorationLine: "underline" },
   filters: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, gap: 12, padding: 17, shadowColor: colors.navy, shadowOpacity: 0.06, shadowRadius: 10 },
   filterHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   filterTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
@@ -244,6 +306,8 @@ const styles = StyleSheet.create({
   stateInput: { width: 84 },
   input: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 10, borderWidth: 1, color: colors.text, height: 44, marginTop: 6, paddingHorizontal: 12 },
   list: { gap: 12 },
+  listGrid: { alignItems: "stretch", flexDirection: "row", flexWrap: "wrap" },
+  gridItem: { flexBasis: "48%", flexGrow: 1, minWidth: 280 },
   emptyState: { alignItems: "center", backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, gap: 8, padding: 22 },
   emptyIcon: { color: colors.pink, fontSize: 34, fontWeight: "800" },
   emptyHint: { color: colors.textSecondary, fontSize: 14, lineHeight: 20, textAlign: "center" },
