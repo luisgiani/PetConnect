@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title description">
   <title id="title">PetConnect — protótipo de fluxo do MVP</title>
-  <desc id="description">Fluxos Android e Web responsiva para adotantes e doadores/ONGs. Inclui busca pública, autenticação, contato por WhatsApp e gestão de anúncios com fotos. Não inclui chat nem interesses.</desc>
+  <desc id="description">Fluxos Android e Web responsiva para adotantes e doadores/ONGs. Inclui autenticação obrigatória, favoritos locais, contato por WhatsApp e gestão de anúncios com fotos. Não inclui chat ou registro formal de interesse.</desc>
   <defs>
     <style>
       text { font-family: Arial, Helvetica, sans-serif; fill: #30283a; }
@@ -28,13 +28,13 @@
 
   <rect width="1600" height="1040" fill="#fffaf4"/>
   <text class="title" x="64" y="68">PetConnect — fluxo do MVP</text>
-  <text class="subtitle" x="64" y="98">Android e Web responsiva · navegação pública · contato autenticado · anúncios com fotos</text>
+  <text class="subtitle" x="64" y="98">Android e Web responsiva · acesso autenticado · favoritos · contato autenticado · anúncios com fotos</text>
   <rect x="1267" y="48" width="269" height="38" rx="19" fill="#f0e8ff"/>
   <text class="tag" x="1401" y="72" text-anchor="middle">ESCOPO MVP ACORDADO</text>
 
   <rect class="adopter" x="48" y="128" width="1504" height="350" rx="20"/>
   <text class="lane" x="72" y="161">FLUXO DO ADOTANTE</text>
-  <text class="small" x="1518" y="160" text-anchor="end">A lista e os detalhes são públicos; o contato exige conta confirmada.</text>
+  <text class="small" x="1518" y="160" text-anchor="end">Lista, detalhes e favoritos exigem conta autenticada; o contato exige conta confirmada.</text>
 
   <g transform="translate(72 190)">
     <rect class="card" width="250" height="248" rx="14"/>
@@ -96,7 +96,7 @@
     <text class="body" x="18" y="78">Contato com responsável</text>
     <text class="small" x="18" y="104">Abrir conversa pelo WhatsApp.</text>
     <text class="small" x="18" y="131">Telefone não aparece na</text>
-    <text class="small" x="18" y="149">navegação pública.</text>
+    <text class="small" x="18" y="149">dados protegidos por autenticação.</text>
     <rect class="button" x="18" y="176" width="214" height="38" rx="9"/>
     <text class="button-text" x="125" y="200" text-anchor="middle">Abrir WhatsApp</text>
     <text class="small" x="18" y="233">Sem chat interno no MVP.</text>
@@ -168,14 +168,14 @@
     <rect class="photo" x="16" y="58" width="58" height="58" rx="9"/>
     <text class="body" x="85" y="78">Mel · Disponível</text>
     <text class="small" x="85" y="99">Campinas, SP</text>
-    <text class="small" x="16" y="145">Visível na busca pública.</text>
+    <text class="small" x="16" y="145">Visível na busca autenticada.</text>
     <text class="small" x="16" y="169">Editar ou marcar como adotado.</text>
     <text class="small" x="16" y="201">Encerrados não aparecem na busca.</text>
     <text class="small" x="16" y="225">Políticas RLS protegem os dados.</text>
   </g>
 
   <line x1="64" y1="888" x2="1536" y2="888" stroke="#e5dce9" stroke-width="1.5"/>
-  <text class="small" x="64" y="921">Fora do MVP: chat interno · favoritos/interesses · publicação em lojas · entrega/certificação para iOS.</text>
+  <text class="small" x="64" y="921">Fora do MVP: chat interno · registro formal de interesse · publicação em lojas · entrega/certificação para iOS.</text>
   <text class="small" x="64" y="951">Critérios técnicos: confirmação de e-mail · RLS · até 5 fotos por anúncio · cada arquivo até 5 MB antes da compressão.</text>
   <text class="small" x="64" y="992">PetConnect · documento de escopo MVP · protótipo funcional de referência</text>
 </svg>
