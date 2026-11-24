@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { useFavorites } from "@/features/animals/FavoritesProvider";
 import type { Animal } from "@/features/animals/types";
 import { colors } from "@/theme/colors";
 
@@ -7,7 +8,9 @@ type AnimalCardProps = { animal: Animal; interactive?: boolean };
 
 export function AnimalCard({ animal, interactive = true }: AnimalCardProps) {
   const { width } = useWindowDimensions();
+  const { isFavorite, isLoading: favoritesLoading, toggleFavorite } = useFavorites();
   const photoHeight = Math.min(Math.max((width - 40) * 0.92, 280), 560);
+  const favorite = isFavorite(animal.id);
   const content = (
     <>
       <View style={[styles.photoFrame, { height: photoHeight }]}>
@@ -53,15 +56,29 @@ export function AnimalCard({ animal, interactive = true }: AnimalCardProps) {
   return (
     <View style={styles.card}>
       {interactive ? (
-        <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
+        <>
+          <Link href={{ pathname: "/animals/[id]", params: { id: animal.id } }} asChild>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={`Ver anúncio de ${animal.name}`}
+              style={({ pressed }) => [styles.post, pressed && styles.pressed]}
+            >
+              {content}
+            </Pressable>
+          </Link>
           <Pressable
-            accessibilityRole="link"
-            accessibilityLabel={`Ver anúncio de ${animal.name}`}
-            style={({ pressed }) => [styles.post, pressed && styles.pressed]}
+            accessibilityRole="button"
+            accessibilityLabel={favorite ? `Remover ${animal.name} dos favoritos` : `Salvar ${animal.name} nos favoritos`}
+            accessibilityState={{ checked: favorite }}
+            disabled={favoritesLoading}
+            onPress={() => {
+              void toggleFavorite(animal.id).catch(() => undefined);
+            }}
+            style={({ pressed }) => [styles.favoriteButton, favoritesLoading && styles.favoriteDisabled, pressed && styles.pressed]}
           >
-            {content}
+            <Text style={[styles.favoriteIcon, favorite && styles.favoriteSelected]}>{favorite ? "♥" : "♡"}</Text>
           </Pressable>
-        </Link>
+        </>
       ) : <View style={styles.post}>{content}</View>}
     </View>
   );
@@ -94,6 +111,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     overflow: "hidden",
+    position: "relative",
   },
   post: { gap: 0 },
   photoFrame: {
@@ -112,9 +130,28 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     left: 14,
     position: "absolute",
-    right: 14,
+    right: 62,
     top: 14,
   },
+  favoriteButton: {
+    alignItems: "center",
+    backgroundColor: colors.surface,
+    borderRadius: 22,
+    elevation: 2,
+    height: 44,
+    justifyContent: "center",
+    position: "absolute",
+    right: 12,
+    shadowColor: colors.navy,
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    top: 12,
+    width: 44,
+    zIndex: 1,
+  },
+  favoriteIcon: { color: colors.navy, fontSize: 24, lineHeight: 28 },
+  favoriteSelected: { color: colors.pink },
+  favoriteDisabled: { opacity: 0.6 },
   statusBadge: {
     backgroundColor: colors.surface,
     borderRadius: 16,

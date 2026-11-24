@@ -52,6 +52,20 @@ export default function ManageAnimalsScreen() {
           <Text style={styles.title}>Meus anúncios</Text>
           <Text style={styles.subtitle}>Gerencie os animais publicados pela sua conta.</Text>
         </View>
+        {animalsQuery.data ? (
+          <View style={styles.summaryRow}>
+            <SummaryCard
+              label="Disponíveis"
+              value={animals.filter((animal) => animal.status === "available").length}
+              tone="available"
+            />
+            <SummaryCard
+              label="Adotados"
+              value={animals.filter((animal) => animal.status === "adopted").length}
+              tone="adopted"
+            />
+          </View>
+        ) : null}
         {animalsQuery.isPending ? <StateMessage message="Carregando seus anúncios..." loading /> : null}
         {animalsQuery.error ? (
           <View style={styles.stateContainer}>
@@ -106,6 +120,12 @@ const styles = StyleSheet.create({
   heading: { gap: 6, marginBottom: 4 },
   title: { color: colors.navy, fontSize: 24, fontWeight: "900" },
   subtitle: { color: colors.textSecondary, fontSize: 15, lineHeight: 22 },
+  summaryRow: { flexDirection: "row", gap: 10 },
+  summaryCard: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, flex: 1, gap: 5, padding: 14 },
+  summaryLabel: { color: colors.textSecondary, fontSize: 13, fontWeight: "600" },
+  summaryValue: { fontSize: 24, fontWeight: "900" },
+  summaryAvailable: { color: colors.success },
+  summaryAdopted: { color: colors.violetDark },
   item: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 16, borderWidth: 1, gap: 12, padding: 10 },
   statusRow: { alignItems: "center", flexDirection: "row", flexWrap: "wrap", gap: 8 },
   status: { borderRadius: 14, fontSize: 13, fontWeight: "700", marginRight: "auto", overflow: "hidden", paddingHorizontal: 10, paddingVertical: 6 },
@@ -115,3 +135,18 @@ const styles = StyleSheet.create({
   emptyIcon: { color: colors.pink, fontSize: 44, fontWeight: "700", textAlign: "center" },
   emptyTitle: { color: colors.navy, fontSize: 21, fontWeight: "900", textAlign: "center" },
 });
+
+function SummaryCard({ label, value, tone }: {
+  label: string;
+  value: number;
+  tone: "available" | "adopted";
+}) {
+  return (
+    <View style={styles.summaryCard}>
+      <Text style={styles.summaryLabel}>{label}</Text>
+      <Text style={[styles.summaryValue, tone === "available" ? styles.summaryAvailable : styles.summaryAdopted]}>
+        {value}
+      </Text>
+    </View>
+  );
+}
