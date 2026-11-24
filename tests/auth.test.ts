@@ -45,6 +45,8 @@ describe("validação de perfil e cadastro", () => {
   it("rejeita números em nome e UF inválida", () => {
     expect(profileSchema.safeParse({ ...validProfile, name: "João 123" }).success).toBe(false);
     expect(profileSchema.safeParse({ ...validProfile, state: "S1" }).success).toBe(false);
+    expect(profileSchema.safeParse({ ...validProfile, state: "XX" }).success).toBe(false);
+    expect(profileSchema.safeParse({ ...validProfile, state: "sp" }).success).toBe(true);
   });
 
   it("exige telefone válido para doador/ONG", () => {

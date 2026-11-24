@@ -21,6 +21,7 @@ Entregar uma aplicação que permita encontrar animais disponíveis para adoçã
 | Descoberta | Usuários autenticados podem listar animais disponíveis e abrir detalhes. |
 | Busca | Usuários autenticados podem filtrar por espécie, porte, cidade e estado. |
 | Contas | Cadastro, login, confirmação de e-mail obrigatória, sessão persistente e perfil do tipo adotante ou doador/ONG. As contas de demonstração devem estar confirmadas antes da apresentação. |
+| Favoritos | Usuários autenticados podem salvar anúncios em uma lista local de favoritos e removê-los. |
 | Publicação | Doador/ONG autenticado pode cadastrar e editar anúncios e marcá-los como adotados/encerrados. |
 | Fotos | Exigir ao menos uma foto e permitir no máximo cinco por anúncio; limite de 5 MB por arquivo antes da compressão; armazenar no Supabase Storage. |
 | Contato | Usuário autenticado pode ver o nome e telefone do responsável somente nos detalhes de anúncios disponíveis; pode iniciar uma chamada ou conversa pelo WhatsApp. |
@@ -39,11 +40,11 @@ Os filtros são aplicados à lista de animais disponíveis. Cidade e estado pass
 7. **Cadastrar / editar animal:** coletar dados do anúncio e até cinco fotos; exigir pelo menos uma foto para publicar.
 8. **Contato:** disponibilizar nome e telefone do responsável somente na tela de detalhes, para usuário autenticado e quando o anúncio estiver disponível.
 
-Em telas pequenas, a navegação pode usar abas ou menu equivalente, mas não deve incluir atalhos de chat interno ou lista de interesses no MVP. Na Web, as mesmas ações devem funcionar em layout responsivo para computador.
+Em telas pequenas, a navegação pode usar abas ou menu equivalente e deve incluir a área de favoritos. Não deve incluir chat interno ou registro formal de interesse no MVP. Na Web, as mesmas ações devem funcionar em layout responsivo para computador.
 
 ## Funcionalidades fora do MVP
 
-- Favoritos, lista de interesses ou registro de intenção de adoção.
+- Registro de intenção de adoção, interesse formal ou acompanhamento posterior ao contato.
 - Chat interno e mensagens em tempo real.
 - Notificações, recomendações automáticas e processo formal de acompanhamento da adoção.
 - Denúncias, moderação e verificação de identidade de usuários.
@@ -59,9 +60,10 @@ Esses itens só entram em uma etapa posterior se houver decisão explícita de a
 2. Pesquisa por espécie, porte e localização.
 3. Abre os detalhes do animal.
 4. Consulta o nome e o telefone do responsável; pode iniciar uma chamada ou tocar em **Conversar pelo WhatsApp**.
-5. Não tem acesso à publicação ou ao gerenciamento de anúncios.
+5. Pode salvar ou remover anúncios favoritos e consultar a área **Salvos**.
+6. Não tem acesso à publicação ou ao gerenciamento de anúncios.
 
-Não há funcionalidade de salvar animais ou consultar uma lista de interesses no MVP.
+Não há registro formal de intenção de adoção. Os favoritos são somente uma lista local para facilitar o acompanhamento visual dos anúncios.
 
 ### Doador/ONG
 
@@ -85,6 +87,7 @@ O MVP só será considerado concluído quando:
 8. O cadastro exigir confirmação de e-mail, e as contas de demonstração estarem confirmadas antes da apresentação.
 9. Erros, carregamento, lista vazia, formulário inválido e falhas de upload apresentarem estados compreensíveis.
 10. As migrations e políticas RLS necessárias estiverem versionadas e testadas com sessão anônima e autenticada.
+11. Uma conta autenticada conseguir salvar e remover favoritos e consultar somente seus anúncios ainda disponíveis na área **Salvos**.
 
 ## Decisões ainda necessárias antes de implementar as áreas correspondentes
 
@@ -97,9 +100,9 @@ Estas decisões não mudam o escopo funcional, mas precisam ser registradas dura
 
 ## Alinhamento dos materiais existentes
 
-- **Pré-projeto:** [pre-projeto-mvp.docx](pre-projeto-mvp.docx) e [pre-projeto-mvp.md](pre-projeto-mvp.md) refletem as plataformas, autenticação, filtros, fotos, contato e segurança acordados.
-- **Protótipo:** [fluxo-mvp.svg](../Design/fluxo-mvp.svg) apresenta o fluxo acordado e substitui chat/interesses por autenticação, localização e gestão de anúncios. O desenho anterior permanece em [Arquivo/](../Arquivo/).
-- **Código/README:** a base já contém versões iniciais de lista com filtros por espécie, porte, cidade e estado, detalhes, cadastro/edição e gerenciamento de estado dos próprios anúncios, fotos, autenticação/perfil, contato protegido e integração com Supabase. A migration controlada de contato deve permanecer aplicada no banco utilizado. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
+- **Pré-projeto:** [pre-projeto-mvp.docx](pre-projeto-mvp.docx) e [pre-projeto-mvp.md](pre-projeto-mvp.md) refletem as plataformas, autenticação, filtros, favoritos, fotos, contato e segurança acordados.
+- **Protótipo:** [fluxo-mvp.svg](../Design/fluxo-mvp.svg) apresenta o fluxo acordado com autenticação, localização, favoritos locais e gestão de anúncios. Chat e registro formal de interesse não fazem parte deste desenho. O desenho anterior permanece em [Arquivo/](../Arquivo/).
+- **Código/README:** a base já contém lista com filtros por espécie, porte, cidade e estado, busca textual, detalhes, favoritos locais, cadastro/edição e gerenciamento de estado dos próprios anúncios, fotos, autenticação/perfil, contato protegido e integração com Supabase. A migration controlada de contato deve permanecer aplicada no banco utilizado. A ordem acima descreve o fluxo-alvo, não funcionalidades já concluídas. Para estado técnico e instruções de validação, consulte o [guia de desenvolvimento](../Arquitetura/guia-desenvolvedor.md).
 
 ## Regra para mudanças de escopo
 

@@ -109,7 +109,7 @@ Em **Minha conta**, perfis `doador_ong` acessam **Gerenciar meus anúncios** (`s
 
 O cadastro cria a conta e envia metadados do perfil. A migration de autenticação cria o registro correspondente em `public.profiles` por trigger. O fluxo de confirmação depende das URLs de callback configuradas em **Authentication → URL Configuration** no painel Supabase. Na Web, o cliente processa a sessão retornada no fragmento da URL; em plataformas nativas, o callback aceita `code` (PKCE) ou `token_hash`.
 
-Em **Minha conta**, a seção **Editar perfil** permite alterar nome, telefone, cidade, UF e biografia opcional. A tela começa em modo de visualização e só mostra o formulário após **Editar perfil**; **Cancelar** descarta alterações locais. Nome e cidade aceitam apenas letras, espaços e hífen/apóstrofo, a UF aceita duas letras e o telefone usa máscara brasileira `(XX) XXXXX-XXXX` ou `(XX) XXXX-XXXX`, sendo salvo no banco somente como dígitos. O botão salva somente o registro do usuário autenticado. A biografia e a localização do doador/ONG aparecem no detalhe do anúncio junto ao contato, nunca na lista pública; o telefone continua protegido pela função controlada de contatos.
+Em **Minha conta**, a seção **Editar perfil** permite alterar nome, telefone, cidade, UF e biografia opcional. A tela começa em modo de visualização e só mostra o formulário após **Editar perfil**; **Cancelar** descarta alterações locais. Nome e cidade aceitam apenas letras, espaços e hífen/apóstrofo, a UF aceita uma das 27 UFs brasileiras e o telefone usa máscara brasileira `(XX) XXXXX-XXXX` ou `(XX) XXXX-XXXX`, sendo salvo no banco somente como dígitos. O botão salva somente o registro do usuário autenticado. A biografia e a localização do doador/ONG aparecem no detalhe do anúncio junto ao contato, nunca na lista pública; o telefone continua protegido pela função controlada de contatos.
 
 ## 4. Banco de dados e migrations
 
@@ -121,6 +121,7 @@ As migrations são aplicadas em ordem cronológica:
 - `20261021000001_add_animal_photos_storage.sql`: adiciona os caminhos de fotos, valida até cinco fotos e configura o bucket público `animal-photos` com leitura pública e upload/exclusão apenas por doadores autenticados.
 - `20261025000000_add_controlled_animal_contacts.sql`: disponibiliza nome e telefone do responsável por anúncios disponíveis somente a usuários autenticados, sem ampliar o acesso RLS à tabela `profiles`.
 - `20261027000000_add_profile_details.sql`: adiciona cidade, UF e biografia opcional ao perfil, mantendo a edição restrita ao próprio usuário.
+- `20261124000000_validate_profile_state.sql`: restringe a UF do perfil às 27 unidades federativas brasileiras.
 
 Para atualizar um banco já existente, aplique as migrations pendentes em ordem, uma vez cada. Se a migration de localização ainda não foi aplicada, execute-a antes da migration de fotos. Não execute novamente migrations já aplicadas nem use reset. As colunas `city`/`state` e `photo_paths` preservam os anúncios existentes: registros antigos ficam sem localização e com lista de fotos vazia; os novos anúncios enviados pelo app exigem cidade, UF e ao menos uma foto.
 
@@ -194,3 +195,4 @@ Ao fazer uma mudança, siga o fluxo completo: atualizar requisito se o comportam
 ## 7. Limites conhecidos da implementação
 
 O código atual já tem lista com filtros, detalhe, cadastro/edição de anúncios com cidade/UF e fotos, área de gestão de anúncios, autenticação, perfil, integração com Supabase e exibição controlada do contato telefônico e WhatsApp para usuários autenticados. A área do doador permite listar os próprios anúncios, editar dados/fotos, marcar como adotado e reabrir. Ainda é necessário testar a proteção dos dados com sessões anônimas e autenticadas e validar os fluxos Web/Android.
+Os favoritos são armazenados localmente por conta por meio do AsyncStorage. A tela **Salvos** filtra a lista disponível usando os IDs locais e não cria tabela ou registro server-side de interesse.

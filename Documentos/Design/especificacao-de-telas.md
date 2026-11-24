@@ -6,7 +6,7 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 
 - O mesmo fluxo funcional deve atender Android e Web responsiva.
 - Usar navegação adequada a cada formato sem acrescentar funcionalidades exclusivas fora do escopo.
-- Não incluir Chat, Meus Chats, Meus Interesses ou ações de favoritar/salvar.
+- Não incluir Chat, Meus Chats ou registro formal de interesse/intenção de adoção.
 - Login é obrigatório para acessar a área principal, a lista e os detalhes dos animais. Sem sessão, encaminhar para entrar ou criar conta.
 - Login, cadastro e confirmação de e-mail permanecem acessíveis sem sessão.
 - Após autenticar, abrir a tela principal correspondente ao perfil; não exibir controles de voltar ou Início nela.
@@ -34,6 +34,8 @@ Este documento detalha o conteúdo e os estados das telas representadas no [flux
 - Apresentar os anúncios em feed vertical, priorizando uma foto grande. Abaixo da foto, mostrar espécie, nome, idade, porte, localização e uma prévia da descrição, com acesso aos detalhes.
 - Se houver mais fotos, indicar a quantidade no card; a galeria completa permanece nos detalhes do anúncio.
 - Cada card mostra somente as informações do animal. O contato do responsável não aparece nesta tela.
+- Permitir salvar ou remover o anúncio dos favoritos por meio do botão de coração no card.
+- Disponibilizar uma tela **Salvos** com os anúncios favoritos ainda disponíveis.
 - Incluir estados de carregamento, lista vazia e erro com ação de tentar novamente.
 
 ### 3. Detalhes do animal

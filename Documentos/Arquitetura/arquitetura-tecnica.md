@@ -151,7 +151,7 @@ Validações críticas existem **também no banco** (constraints, tipos enumerad
 | `profiles` | id (= auth.users.id), nome, tipo (`adotante` \| `doador_ong`), telefone, criado_em |
 | `animals` | id, owner_id, nome, especie (`cachorro` \| `gato` \| `outro`), raca, idade, porte, saude, descricao, cidade, estado, photo_paths (1–5 caminhos de fotos), status, criado_em. As migrations de localização/fotos preservam anúncios anteriores com colunas nulas ou lista de fotos vazia; novos anúncios exigem cidade, estado e ao menos uma foto. |
 | `animal_photos` | id, animal_id, caminho do arquivo no Supabase Storage, ordem (de uma a cinco fotos por anúncio publicado) |
-| `interests` | Fora do MVP; avaliar somente se favoritos/intenção de adoção forem aprovados em uma evolução |
+| `favorites` (estado local) | Lista local por usuário armazenada no AsyncStorage; fora do banco e sem tabela RLS no MVP |
 | `conversations`, `messages` | Fora do MVP; criar somente se o chat interno for aprovado em uma evolução |
 
 O campo `especie` foi acrescentado em relação ao protótipo, pois é necessário para os filtros de busca.
@@ -163,7 +163,7 @@ A lista atual aplica filtros por espécie e porte exatos, cidade por correspond�
 ## 7. Escopo e Comunicação entre as Partes
 
 1. **MVP atual:** somente a tela de detalhes mostra nome e telefone do responsável, para usuários autenticados e apenas em anúncios disponíveis; os links `tel:` e **Conversar pelo WhatsApp** iniciam o contato. A lista de busca não consulta nem recebe dados de contato.
-2. **Fora do MVP atual:** favoritos/interesses e chat interno com Supabase Realtime exigem nova decisão de escopo e, quando aplicável, tabelas e políticas RLS.
+2. **Limite atual:** favoritos são armazenados localmente por conta no dispositivo e não são sincronizados com o Supabase. Chat interno, listas server-side de interesses e Supabase Realtime ficam fora do MVP.
 
 O MVP tem como plataformas-alvo Android e Web. Consulte o [índice da documentação](../README.md) para a ordem de autoridade e os demais documentos ativos.
 
