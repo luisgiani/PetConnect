@@ -4,6 +4,7 @@ import { AnimalCard } from "@/components/AnimalCard";
 import { PrimaryButton } from "@/components/PrimaryButton";
 import { StateMessage } from "@/components/StateMessage";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { useFavorites } from "@/features/animals/FavoritesProvider";
 import { useAnimals } from "@/features/animals/hooks/useAnimals";
 import type { AnimalFilters, AnimalSize, AnimalSpecies } from "@/features/animals/types";
 import { colors } from "@/theme/colors";
@@ -26,6 +27,7 @@ export default function AnimalsScreen() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const { data, error, isPending, refetch, isRefetching } = useAnimals(activeFilters);
   const { profile } = useAuth();
+  const { error: favoritesError } = useFavorites();
   const hasActiveFilters = Object.values(activeFilters).some(Boolean);
   const prioritizedData = [...(data ?? [])].sort((first, second) =>
     locationScore(second, profile?.city, profile?.state) - locationScore(first, profile?.city, profile?.state),
@@ -44,6 +46,24 @@ export default function AnimalsScreen() {
     setDraftFilters({});
     setActiveFilters({});
     setFiltersOpen(false);
+  }
+
+  function applyQuickSpecies(species: AnimalSpecies) {
+    setActiveFilters((current) => ({ ...current, species: current.species === species ? undefined : species }));
+    setDraftFilters((current) => ({ ...current, species: current.species === species ? undefined : species }));
+  }
+
+  function applyNearbyFilter() {
+    if (!profile?.city && !profile?.state) return;
+    if (isNearbyFilterActive(activeFilters, profile.city, profile.state)) {
+      setActiveFilters((current) => ({ ...current, city: undefined, state: undefined }));
+      setDraftFilters((current) => ({ ...current, city: "", state: "" }));
+      return;
+    }
+    const city = profile.city?.trim() || undefined;
+    const state = profile.state?.trim().toUpperCase() || undefined;
+    setActiveFilters((current) => ({ ...current, city, state }));
+    setDraftFilters((current) => ({ ...current, city: city ?? "", state: state ?? "" }));
   }
 
   return (
@@ -73,12 +93,28 @@ export default function AnimalsScreen() {
       </View>
 
       <View style={styles.quickChoiceRow}>
+        <FilterChoice label="Todos" selected={!hasActiveFilters} onPress={clearFilters} />
         <FilterChoice
-          label="Todos os animais"
-          selected={!hasActiveFilters}
-          onPress={clearFilters}
+          label="Cachorros"
+          selected={activeFilters.species === "cachorro"}
+          onPress={() => applyQuickSpecies("cachorro")}
+        />
+        <FilterChoice
+          label="Gatos"
+          selected={activeFilters.species === "gato"}
+          onPress={() => applyQuickSpecies("gato")}
+        />
+        <FilterChoice
+          label="Perto de mim"
+          selected={isNearbyFilterActive(activeFilters, profile?.city, profile?.state)}
+          disabled={!profile?.city && !profile?.state}
+          onPress={applyNearbyFilter}
         />
       </View>
+      {!profile?.city && !profile?.state ? (
+        <Text style={styles.nearbyHint}>Adicione sua cidade ao perfil para filtrar por proximidade.</Text>
+      ) : null}
+      {favoritesError ? <StateMessage message={`Não foi possível salvar/carregar favoritos: ${favoritesError}`} /> : null}
 
       {filtersOpen ? <View style={styles.filters}>
         <View style={styles.filterHeader}>
@@ -188,7 +224,8 @@ const styles = StyleSheet.create({
   quickHint: { color: colors.violetDark, fontSize: 13, marginTop: 3 },
   filterButton: { backgroundColor: colors.violet, borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10 },
   filterButtonText: { color: "#fff", fontSize: 14, fontWeight: "800" },
-  quickChoiceRow: { flexDirection: "row" },
+  quickChoiceRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  nearbyHint: { color: colors.textSecondary, fontSize: 13, marginTop: -8 },
   filters: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: 20, borderWidth: 1, gap: 12, padding: 17, shadowColor: colors.navy, shadowOpacity: 0.06, shadowRadius: 10 },
   filterHeader: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   filterTitle: { color: colors.text, fontSize: 18, fontWeight: "700" },
@@ -198,8 +235,10 @@ const styles = StyleSheet.create({
   choices: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   choice: { backgroundColor: colors.canvas, borderColor: colors.border, borderRadius: 18, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 8 },
   choiceSelected: { backgroundColor: colors.lilac, borderColor: "#BFB3FF" },
+  choiceDisabled: { opacity: 0.55 },
   choiceText: { color: colors.textSecondary, fontSize: 14 },
   choiceTextSelected: { color: colors.violetDark, fontWeight: "700" },
+  choiceTextDisabled: { color: colors.textSecondary },
   locationFilters: { flexDirection: "row", gap: 10 },
   cityInput: { flex: 1 },
   stateInput: { width: 84 },
@@ -219,15 +258,32 @@ function locationScore(animal: { city: string | null; state: string | null }, ci
   return 0;
 }
 
-function FilterChoice({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+function FilterChoice({ label, selected, disabled = false, onPress }: {
+  label: string;
+  selected: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityState={{ checked: selected }}
+      accessibilityState={{ checked: selected, disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={[styles.choice, selected && styles.choiceSelected]}
+      style={[styles.choice, selected && styles.choiceSelected, disabled && styles.choiceDisabled]}
     >
-      <Text style={[styles.choiceText, selected && styles.choiceTextSelected]}>{label}</Text>
+      <Text style={[styles.choiceText, selected && styles.choiceTextSelected, disabled && styles.choiceTextDisabled]}>{label}</Text>
     </Pressable>
   );
+}
+
+function isNearbyFilterActive(filters: AnimalFilters, city?: string | null, state?: string | null): boolean {
+  if (!city && !state) return false;
+  const sameCity = city
+    ? filters.city?.trim().toLocaleLowerCase("pt-BR") === city.trim().toLocaleLowerCase("pt-BR")
+    : !filters.city;
+  const sameState = state
+    ? filters.state?.trim().toUpperCase() === state.trim().toUpperCase()
+    : !filters.state;
+  return Boolean(filters.city || filters.state) && sameCity && sameState;
 }

@@ -4,9 +4,10 @@ import { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { HeaderHomeButton } from "@/components/HeaderHomeButton";
-import { HeaderAccountButton } from "@/components/HeaderAccountButton";
 import { BrandHeaderLogo } from "@/components/BrandHeaderLogo";
 import { AuthProvider, useAuth } from "@/features/auth/AuthProvider";
+import { FavoritesProvider } from "@/features/animals/FavoritesProvider";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { getProfileHomeRoute, getRoleRedirect } from "@/features/auth/role-navigation";
 import { colors } from "@/theme/colors";
 
@@ -26,8 +27,10 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <StatusBar style="dark" />
-        <RootNavigator />
+        <FavoritesProvider>
+          <StatusBar style="dark" />
+          <RootNavigator />
+        </FavoritesProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
@@ -78,37 +81,50 @@ function RootNavigator() {
     if (roleRedirect) return <Redirect href={roleRedirect} />;
   }
 
+  const showBottomNavigation = Boolean(auth.session && auth.profile) && !pathname.startsWith("/auth/");
+
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.surface },
-        headerTintColor: colors.navy,
-        headerTitleStyle: { fontWeight: "700" },
-        headerRight: () => <HeaderHomeButton />,
-        contentStyle: { backgroundColor: colors.canvas },
-      }}
-    >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="animals/index"
-        options={{ title: "Animais para adoção", headerBackVisible: false, headerLeft: () => null, headerRight: () => <HeaderAccountButton />, gestureEnabled: false }}
-      />
-      <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal", headerRight: () => null }} />
-      <Stack.Screen
-        name="animals/manage"
-        options={{ title: "", headerTitle: "", headerBackVisible: false, headerLeft: () => <BrandHeaderLogo />, headerRight: () => <HeaderAccountButton />, gestureEnabled: false }}
-      />
-      <Stack.Screen name="animals/[id]" options={{ title: "Detalhes do animal" }} />
-      <Stack.Screen name="account" options={{ title: "Minha conta", headerRight: () => null }} />
-      <Stack.Screen name="auth/login" options={{ title: "Entrar", headerShown: false }} />
-      <Stack.Screen name="auth/signup" options={{ title: "Criar conta" }} />
-      <Stack.Screen name="auth/confirmation" options={{ title: "Confirme seu e-mail" }} />
-      <Stack.Screen name="auth/callback" options={{ title: "Confirmação de e-mail" }} />
-    </Stack>
+    <View style={styles.navigator}>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colors.surface },
+          headerTintColor: colors.navy,
+          headerTitleStyle: { fontWeight: "700" },
+          headerRight: () => <HeaderHomeButton />,
+          contentStyle: { backgroundColor: colors.canvas },
+        }}
+      >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="animals/index"
+          options={{ title: "Animais para adoção", headerBackVisible: false, headerLeft: () => null, headerRight: () => null, gestureEnabled: false }}
+        />
+        <Stack.Screen name="animals/new" options={{ title: "Cadastrar animal", headerRight: () => null }} />
+        <Stack.Screen
+          name="animals/manage"
+          options={{ title: "", headerTitle: "", headerBackVisible: false, headerLeft: () => <BrandHeaderLogo />, headerRight: () => null, gestureEnabled: false }}
+        />
+        <Stack.Screen name="animals/[id]" options={{ title: "Detalhes do animal", headerRight: () => null }} />
+        <Stack.Screen
+          name="favorites"
+          options={{ title: "Favoritos", headerBackVisible: false, headerLeft: () => null, headerRight: () => null }}
+        />
+        <Stack.Screen
+          name="account"
+          options={{ title: "Minha conta", headerBackVisible: false, headerLeft: () => null, headerRight: () => null }}
+        />
+        <Stack.Screen name="auth/login" options={{ title: "Entrar", headerShown: false }} />
+        <Stack.Screen name="auth/signup" options={{ title: "Criar conta" }} />
+        <Stack.Screen name="auth/confirmation" options={{ title: "Confirme seu e-mail" }} />
+        <Stack.Screen name="auth/callback" options={{ title: "Confirmação de e-mail" }} />
+      </Stack>
+      {showBottomNavigation ? <BottomNavigation /> : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  navigator: { backgroundColor: colors.canvas, flex: 1 },
   loading: { alignItems: "center", backgroundColor: colors.canvas, flex: 1, gap: 12, justifyContent: "center" },
   loadingText: { color: colors.textSecondary, fontSize: 15 },
 });
